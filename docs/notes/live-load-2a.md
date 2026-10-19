@@ -39,6 +39,8 @@
 | 3c | OCC 压完任务还能不能做对 | **能**【已核实，SolQA 复核时补】 | turn 1 的最终回复 `m5 0500 8f7d945aa97e…`（会话 seq 96）出现在第 3 次压缩之后。它和云主机上 `Get-Content m5.txt -Tail 1` 的结果一致，和本机用生成规则 `sha256("m5-500")` 独立算出的结果也一致。turn 2 模型原话是 "I no longer have it. The checkpoint summary preserved only m1's last line"，说明压缩确实生效了 |
 | 4 | Meter 和原生 tokenUsage 对账 | **一致**【已核实】 | `meter-check.txt`：6 个会话、13 个回合逐轮比对，四个桶、`requests`、`compaction`、`compactionCalls` 全部相等，包括 e2 的 3 次压缩（81373 / 2016）。原生一侧用的是 `assistant/message` 和 `compaction/summary` 事件上的 `usage` |
 
+**2026-10-19 更正（表格原文保留）**：上表第 0 行「阶段 1 的 `0xC0000142` 确实是因为服务从 SSH 会话起」这个归因不够准确，准确因果见 [live-load-1.md](live-load-1.md) 的 2026-10-19 更正：`pwsh` 工具的候选表最后一项是 5.1 的 `System32\WindowsPowerShell\v1.0\powershell.exe`（`dsh-pwsh-local/lib/index.js:26-32`），所以机器上**一直有 PowerShell 5.1 可用**，第 0 行那次桌面会话跑通的就是这个回退。起不来的是「5.1 回退 + 默认沙箱 + session 0」；装 PowerShell 7 并放宽沙箱 preset 之后，SSH 直起即可用。
+
 ## 修复前（第一轮 run，已由 SolDev 修好）
 
 - ObservationPack 存档写了，但替换没发生，模型看到的是全文。原因是 `index.js` 的 `createRecordSink` 把没解析的 `meter.home`（undefined）传给了 `appendLedgerRecord`，`path.join` 抛错后按“出错就让路”保留了原结果。`occ.js` 也是同样的写法；`obs_recall` 注册时漏传了 `record`。SolDev 修了这几处，另外把两处 fire-and-forget 的账本写入改成了 await（`step45-wiring.md` 第 13 节）。修复后重跑就是上面的 r2。
