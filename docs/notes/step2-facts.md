@@ -287,7 +287,7 @@ ops_bash 没有后台提升（`dsh-ops:lib/shells.js:984-986` 的 description �
 
 - `parent: exec.token` 之外，`callId` 和 `rootCallId` 用新生成的还是复用外层，没有明文规定。PTC 的做法是生成 `<parent>:ptc:<n>` 形式的子 callId（`asar:dsh-tools/lib/index.js:1367`）。Fusion 照这个形状生成即可，但没实测过 registry 会不会校验。
 - `signal` 传外层的 `exec.signal` 会让两步共享同一个取消；是否要单独的超时，没核实。
-- 嵌套调用会不会额外弹一次审批：推断不会（不带 `sandbox_permissions` 就不走 `ctx.approval`，`asar:dsh-tool-pwsh/lib/index.js:334-349` 的 escalation 路径只在显式请求时进入），但要装进 web profile 实测。
+- 嵌套调用会不会额外弹一次审批：推断不会（不带 `sandbox_permissions` 就不走 `ctx.approval`；**准入守卫在 `asar:dsh-tool-pwsh/lib/index.js:631`**（`args.sandbox_permissions !== void 0 && args.justification !== void 0` 才进审批），escalation 本体在 `:334-349`），但要装进 web profile 实测。
 - `ops_bash` 在 `workspace-write` 模式下会不会因为 `prepareWorkspace` 的 owner 检查失败（`dsh-ops:lib/workspace-preparation.js`），要看真实 workspace 的 owner。本机 `<source>` 的 owner 不是当前用户，`<repo>` 是。
 
 ---
