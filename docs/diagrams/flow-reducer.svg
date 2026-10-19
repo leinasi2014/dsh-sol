@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1090" viewBox="0 0 1180 1090">
+<style>text{font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Segoe UI',sans-serif;}</style>
+<defs>
+<marker id="ah4b5563" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/></marker>
+<marker id="ahea580c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ea580c"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40.0" y="42.0" font-size="22" font-weight="bold" fill="#111827" text-anchor="start">Evidence-Preserving Reducer：日志压成带逐字引文的回执</text>
+<text x="40.0" y="68.0" font-size="13" font-weight="normal" fill="#6b7280" text-anchor="start">可选，默认关闭。只处理失败的、够大的 shell 输出；任何一步不通过都保留原结果。</text>
+<rect x="230" y="100" width="300" height="44" rx="22.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="380.0" y="126.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">工具结果到了（post-execute）</text>
+<polygon points="180.0,172.0 580.0,172.0 600.0,204.0 580.0,236.0 180.0,236.0 160.0,204.0" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6"/>
+<text x="380.0" y="200.7" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">顶层的 shell 调用，跑了但失败了？</text>
+<text x="380.0" y="218.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">复用 Fusion 的 classify；不看命令名；转后台、Fusion 结果都跳过</text>
+<polygon points="180.0,266.0 580.0,266.0 600.0,294.0 580.0,322.0 180.0,322.0 160.0,294.0" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6"/>
+<text x="380.0" y="298.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">日志 ≥ 4 KiB、≤ 60 万字符，且没被截断？</text>
+<polygon points="180.0,352.0 580.0,352.0 600.0,384.0 580.0,416.0 180.0,416.0 160.0,384.0" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6"/>
+<text x="380.0" y="379.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">没有疑似密钥？</text>
+<text x="380.0" y="398.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">正则查 api_key、token、secret 等字样</text>
+<rect x="160" y="446" width="440" height="56" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6"/>
+<text x="380.0" y="469.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">收到的内容按 sha256 存档</text>
+<text x="380.0" y="488.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">不去读 shell 自己落盘的全文；存档路径写进回执</text>
+<rect x="160" y="532" width="440" height="76" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+<text x="380.0" y="556.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">发给便宜模型挑引文</text>
+<text x="380.0" y="575.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">只许原文里逐字连续的片段，最多 12 条，每条 ≤ 600 字符</text>
+<text x="380.0" y="593.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">日志当作不可信数据包起来，只许返回 JSON</text>
+<polygon points="180.0,638.0 580.0,638.0 600.0,666.0 580.0,694.0 180.0,694.0 160.0,666.0" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6"/>
+<text x="380.0" y="670.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">模型按时返回了吗？</text>
+<rect x="160" y="724" width="440" height="112" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6"/>
+<text x="380.0" y="748.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">逐项严格校验</text>
+<text x="380.0" y="767.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">JSON 能解析，schema 对，源哈希一致</text>
+<text x="380.0" y="785.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">每条引文都是原文的精确子串</text>
+<text x="380.0" y="803.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">日志是失败的，就必须带失败证据</text>
+<text x="380.0" y="821.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">回执必须比原文小</text>
+<polygon points="180.0,866.0 580.0,866.0 600.0,894.0 580.0,922.0 180.0,922.0 160.0,894.0" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6"/>
+<text x="380.0" y="898.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">全部通过？</text>
+<rect x="160" y="952" width="440" height="76" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+<text x="380.0" y="976.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">结果换成回执</text>
+<text x="380.0" y="995.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">状态、几条关键原文和行号、存档路径</text>
+<text x="380.0" y="1013.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">模型拿到一份比原文小得多的回执，不再是整段日志</text>
+<rect x="700" y="968" width="380" height="44" rx="22.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="890.0" y="994.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">保留原结果不改，账本记下原因</text>
+<rect x="700" y="172" width="440" height="216" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="712.0" y="221.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="start">外发风险</text>
+<text x="712.0" y="240.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">默认关闭；要同时配 enabled、provider、model 才生效，没有默认模型</text>
+<text x="712.0" y="258.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">开了以后，所有超过 4 KiB 的失败命令输出都会外发</text>
+<text x="712.0" y="276.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">密钥检测只是正则，尽力而为，不是保证</text>
+<text x="712.0" y="294.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">超时（默认 20 秒）、取消、模型不可用、回执不合格，都保留原结果</text>
+<text x="712.0" y="312.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">每次外发在账本记一行：命令哈希、字节数、模型</text>
+<text x="712.0" y="330.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">这次调用不进会话日志，插件按返回的 usage 自己记账</text>
+<text x="712.0" y="348.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">请求设 purpose、不传 sessionId，免得被 ds-bot 的群转发截走</text>
+<path d="M 380.0 144.0 L 380.0 172.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 380.0 236.0 L 380.0 266.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 380.0 322.0 L 380.0 352.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 380.0 416.0 L 380.0 446.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 380.0 502.0 L 380.0 532.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 380.0 608.0 L 380.0 638.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 380.0 694.0 L 380.0 724.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 380.0 836.0 L 380.0 866.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 380.0 922.0 L 380.0 952.0" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#ahea580c)"/>
+<path d="M 600.0 204.0 L 650.0 204.0 L 650.0 990.0 L 700.0 990.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 600.0 294.0 L 650.0 294.0" fill="none" stroke="#4b5563" stroke-width="1.5"/>
+<path d="M 600.0 384.0 L 650.0 384.0" fill="none" stroke="#4b5563" stroke-width="1.5"/>
+<path d="M 600.0 666.0 L 650.0 666.0" fill="none" stroke="#4b5563" stroke-width="1.5"/>
+<path d="M 600.0 894.0 L 650.0 894.0" fill="none" stroke="#4b5563" stroke-width="1.5"/>
+<rect x="369.5" y="242.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="380.0" y="255.0" font-size="11" fill="#ea580c" text-anchor="middle">是</text>
+<rect x="369.5" y="328.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="380.0" y="341.0" font-size="11" fill="#ea580c" text-anchor="middle">是</text>
+<rect x="369.5" y="422.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="380.0" y="435.0" font-size="11" fill="#ea580c" text-anchor="middle">是</text>
+<rect x="369.5" y="700.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="380.0" y="713.0" font-size="11" fill="#ea580c" text-anchor="middle">是</text>
+<rect x="369.5" y="928.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="380.0" y="941.0" font-size="11" fill="#ea580c" text-anchor="middle">是</text>
+<rect x="614.5" y="195.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="625.0" y="208.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+<rect x="614.5" y="285.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="625.0" y="298.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+<rect x="614.5" y="375.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="625.0" y="388.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+<rect x="614.5" y="657.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="625.0" y="670.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+<rect x="614.5" y="885.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="625.0" y="898.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+</svg>

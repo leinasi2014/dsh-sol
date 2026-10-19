@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="980" viewBox="0 0 1280 980">
+<style>text{font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Segoe UI',sans-serif;}</style>
+<defs>
+<marker id="ah059669" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+<marker id="ah0d9488" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0d9488"/></marker>
+<marker id="ah2563eb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/></marker>
+<marker id="ah4b5563" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/></marker>
+<marker id="ah7c3aed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/></marker>
+<marker id="aha16207" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a16207"/></marker>
+<marker id="ahea580c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ea580c"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="30" y="180" width="1220" height="330" rx="14" fill="#f3f4f6" fill-opacity="0.6" stroke="#6b7280" stroke-width="1.4" stroke-dasharray="8 5"/>
+<text x="50.0" y="206.0" font-size="14" font-weight="bold" fill="#374151" text-anchor="start">DSH 宿主 0.2.1-rc.2（原生能力，插件不改它）</text>
+<text x="1230.0" y="206.0" font-size="12" font-weight="normal" fill="#6b7280" text-anchor="end">宿主内部的调用顺序见 flow-overview</text>
+<rect x="30" y="560" width="1220" height="290" rx="14" fill="#faf5ff" fill-opacity="0.6" stroke="#8b5cf6" stroke-width="1.4" stroke-dasharray="8 5"/>
+<text x="50.0" y="586.0" font-size="14" font-weight="bold" fill="#6d28d9" text-anchor="start">dsh-sol 插件</text>
+<rect x="210" y="596" width="1024" height="112" rx="10" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<text x="40.0" y="42.0" font-size="22" font-weight="bold" fill="#111827" text-anchor="start">dsh-sol 架构图</text>
+<text x="40.0" y="68.0" font-size="13" font-weight="normal" fill="#6b7280" text-anchor="start">灰色是 DSH 原生能力，彩色是 dsh-sol 插件模块，虚线框表示可选或默认关闭。箭头上写的是挂接点。</text>
+<rect x="500" y="92" width="200" height="58" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="600.0" y="116.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">模型提供方</text>
+<text x="600.0" y="135.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">profile 里配置的 provider</text>
+<rect x="760" y="92" width="240" height="58" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="880.0" y="116.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">便宜模型（只给 Reducer 用）</text>
+<text x="880.0" y="135.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">可选，默认不调用</text>
+<rect x="60" y="220" width="200" height="80" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="160.0" y="240.2" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">tool-result-pruner</text>
+<text x="160.0" y="257.5" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">原生，只在压缩时运行</text>
+<text x="160.0" y="274.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">超过 8192 字符的结果</text>
+<text x="160.0" y="290.5" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">只留头 4096、尾 1024</text>
+<rect x="500" y="220" width="200" height="80" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="600.0" y="246.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">LLM 层</text>
+<text x="600.0" y="265.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">llm/stream</text>
+<text x="600.0" y="283.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">每次 provider 请求都经过</text>
+<rect x="720" y="220" width="240" height="80" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="840.0" y="246.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">内置工具</text>
+<text x="840.0" y="265.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">edit / write / pwsh</text>
+<text x="840.0" y="283.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">命令走沙箱和审批</text>
+<rect x="980" y="220" width="240" height="80" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="1100.0" y="246.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">spill-policy（原生落盘）</text>
+<text x="1100.0" y="265.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">超过 12500 token 落盘</text>
+<text x="1100.0" y="283.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">只给头尾预览和路径</text>
+<rect x="60" y="400" width="200" height="80" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="160.0" y="420.1" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">压缩服务</text>
+<text x="160.0" y="437.5" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">ctx.compaction</text>
+<text x="160.0" y="454.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">原生自动压：本机主力</text>
+<text x="160.0" y="470.5" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">模型约 55% 窗口时</text>
+<rect x="280" y="400" width="180" height="80" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="370.0" y="435.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Agent 循环</text>
+<text x="370.0" y="454.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">每步开头 agent/pre-step</text>
+<rect x="480" y="400" width="220" height="80" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="590.0" y="428.4" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">会话日志 + 原生计量</text>
+<text x="590.0" y="445.8" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">session/event 逐条提交</text>
+<text x="590.0" y="462.3" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">tokenUsage 投影已记主循环</text>
+<rect x="720" y="400" width="500" height="80" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="970.0" y="435.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">工具调用流水线</text>
+<text x="970.0" y="454.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">pre-execute → guard → execute → post-execute → finalizeContent → result</text>
+<rect x="46" y="600" width="140" height="226" rx="8" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+<text x="116.0" y="663.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">index.js 入口</text>
+<text x="116.0" y="682.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">读配置开关</text>
+<text x="116.0" y="700.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">只装配打开的</text>
+<text x="116.0" y="718.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">模块，默认全关</text>
+<text x="116.0" y="736.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle"></text>
+<text x="116.0" y="754.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">engines.dsh</text>
+<text x="116.0" y="772.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">写支持的版本</text>
+<rect x="226" y="606" width="190" height="92" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="321.0" y="632.1" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Online Context Compact</text>
+<text x="321.0" y="649.5" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">occ.js · 只管非 Bot 会话</text>
+<text x="321.0" y="666.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">步骤边界 + 占用过线</text>
+<text x="321.0" y="682.5" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">默认干跑，只记不压</text>
+<rect x="432" y="606" width="190" height="92" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.6"/>
+<text x="527.0" y="629.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Meter 计量</text>
+<text x="527.0" y="648.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">meter.js · 只观察</text>
+<text x="527.0" y="666.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">读原生 tokenUsage</text>
+<text x="527.0" y="684.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">补上压缩那次的 token</text>
+<rect x="638" y="606" width="190" height="92" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+<text x="733.0" y="629.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Action Fusion</text>
+<text x="733.0" y="648.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">fusion.js</text>
+<text x="733.0" y="666.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">改完就测，一次调用</text>
+<text x="733.0" y="684.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">命令优先走 ops_bash</text>
+<rect x="844" y="606" width="190" height="92" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="939.0" y="629.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">ObservationPack</text>
+<text x="939.0" y="648.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">observation.js</text>
+<text x="939.0" y="666.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">大输出换成句柄</text>
+<text x="939.0" y="684.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">用 obs_recall 按页回读</text>
+<rect x="1050" y="606" width="170" height="92" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="1135.0" y="629.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Reducer（可选）</text>
+<text x="1135.0" y="648.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">reducer.js</text>
+<text x="1135.0" y="666.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">日志压成回执</text>
+<text x="1135.0" y="684.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">引文逐字核对</text>
+<rect x="226" y="736" width="396" height="90" rx="8" fill="#fafafa" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="424.0" y="767.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">OCC 的状态</text>
+<text x="424.0" y="786.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">按 sessionId 存进插件自己的存储域</text>
+<text x="424.0" y="804.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">不写会话日志（外部插件不允许写）</text>
+<rect x="638" y="736" width="582" height="90" rx="8" fill="#fefce8" stroke="#a16207" stroke-width="1.6"/>
+<text x="929.0" y="767.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">archive.js + ledger.jsonl（共用）</text>
+<text x="929.0" y="786.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">内容寻址存档：按 sha256 命名，写一次不再改；只存模型看到的那份</text>
+<text x="929.0" y="804.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">账本记每回合 token、每次替换、回读、融合、回退和前后字节数</text>
+<rect x="226" y="880" width="396" height="64" rx="8" fill="#fafafa" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="424.0" y="907.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">不碰的东西</text>
+<text x="424.0" y="926.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">不写会话目录，不调 appendPluginRecord，不改 DSH 配置</text>
+<rect x="638" y="880" width="582" height="64" rx="8" fill="#fafafa" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="929.0" y="907.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">本地磁盘：$DSH_HOME/dsh-sol/&lt;sessionId&gt;/</text>
+<text x="929.0" y="926.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">objects/&lt;sha256&gt;.txt  ·  ledger.jsonl  ·  权限靠用户目录 ACL</text>
+<path d="M 160.0 400.0 L 160.0 300.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 370.0 400.0 L 370.0 340.0 L 560.0 340.0 L 560.0 300.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 460.0 440.0 L 480.0 440.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 600.0 220.0 L 600.0 150.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 680.0 220.0 L 680.0 168.0 L 880.0 168.0 L 880.0 150.0" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#ahea580c)"/>
+<path d="M 840.0 400.0 L 840.0 300.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 1100.0 300.0 L 1100.0 400.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 186.0 652.0 L 210.0 652.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 245.0 606.0 L 245.0 545.0 L 160.0 545.0 L 160.0 480.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 370.0 606.0 L 370.0 480.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 560.0 606.0 L 560.0 480.0" fill="none" stroke="#059669" stroke-width="1.5" marker-end="url(#ah059669)"/>
+<path d="M 760.0 606.0 L 760.0 480.0" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#ah2563eb)"/>
+<path d="M 880.0 606.0 L 880.0 480.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 990.0 606.0 L 990.0 480.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 1140.0 606.0 L 1140.0 480.0" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#ahea580c)"/>
+<path d="M 320.0 698.0 L 320.0 736.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 527.0 698.0 L 527.0 716.0 L 660.0 716.0 L 660.0 736.0" fill="none" stroke="#059669" stroke-width="1.5" marker-end="url(#ah059669)"/>
+<path d="M 733.0 698.0 L 733.0 736.0" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#ah2563eb)"/>
+<path d="M 939.0 698.0 L 939.0 736.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 1135.0 698.0 L 1135.0 736.0" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#ahea580c)"/>
+<path d="M 929.0 826.0 L 929.0 880.0" fill="none" stroke="#a16207" stroke-width="1.5" marker-end="url(#aha16207)"/>
+<rect x="127.5" y="341.0" width="65.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="160.0" y="354.0" font-size="11" fill="#4b5563" text-anchor="middle">压缩时调用</text>
+<rect x="443.5" y="331.0" width="43.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="465.0" y="344.0" font-size="11" fill="#4b5563" text-anchor="middle">发请求</text>
+<rect x="556.5" y="176.0" width="87.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="600.0" y="189.0" font-size="11" fill="#4b5563" text-anchor="middle">请求和流式回复</text>
+<rect x="725.3" y="159.0" width="109.4" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="780.0" y="172.0" font-size="11" fill="#ea580c" text-anchor="middle">Reducer 的嵌套调用</text>
+<rect x="824.0" y="326.0" width="32.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="840.0" y="339.0" font-size="11" fill="#4b5563" text-anchor="middle">调用</text>
+<rect x="1053.5" y="326.0" width="92.9" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="1100.0" y="339.0" font-size="11" fill="#4b5563" text-anchor="middle">挂 post-execute</text>
+<rect x="108.3" y="511.0" width="103.4" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="160.0" y="524.0" font-size="11" fill="#7c3aed" text-anchor="middle">调 compactRegion</text>
+<rect x="324.0" y="531.0" width="92.1" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="370.0" y="544.0" font-size="11" fill="#7c3aed" text-anchor="middle">pre-step 里判断</text>
+<rect x="506.1" y="531.0" width="107.9" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="560.0" y="544.0" font-size="11" fill="#059669" text-anchor="middle">读 tokenUsage 投影</text>
+<rect x="705.2" y="531.0" width="109.7" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="760.0" y="544.0" font-size="11" fill="#2563eb" text-anchor="middle">注册 edit_then_run</text>
+<rect x="828.0" y="531.0" width="103.9" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="880.0" y="544.0" font-size="11" fill="#0d9488" text-anchor="middle">post-execute 替换</text>
+<rect x="943.8" y="531.0" width="92.5" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="990.0" y="544.0" font-size="11" fill="#0d9488" text-anchor="middle">注册 obs_recall</text>
+<rect x="1088.0" y="531.0" width="103.9" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="1140.0" y="544.0" font-size="11" fill="#ea580c" text-anchor="middle">post-execute 改写</text>
+</svg>

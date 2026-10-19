@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000">
+<style>text{font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Segoe UI',sans-serif;}</style>
+<defs>
+<marker id="ah059669" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+<marker id="ah0d9488" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0d9488"/></marker>
+<marker id="ah2563eb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/></marker>
+<marker id="ah7c3aed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/></marker>
+<marker id="ah8b5cf6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40.0" y="42.0" font-size="22" font-weight="bold" fill="#111827" text-anchor="start">和 dsh-ops、ds-bot 共存：冲突点和 dsh-sol 的做法</text>
+<text x="40.0" y="68.0" font-size="13" font-weight="normal" fill="#6b7280" text-anchor="start">三个插件装在同一个 profile 里。不关、不改另外两个，冲突全在 dsh-sol 这一侧绕开。</text>
+<text x="250.0" y="104.0" font-size="14" font-weight="bold" fill="#4b5563" text-anchor="middle">碰到的情况（别的插件这样做）</text>
+<text x="790.0" y="104.0" font-size="14" font-weight="bold" fill="#6d28d9" text-anchor="middle">dsh-sol 的做法</text>
+<rect x="40" y="120" width="470" height="64" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="275.0" y="148.7" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">dsh-ops 可以关掉宿主 shell</text>
+<text x="275.0" y="166.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">shellPolicy 设成 deny-host-shell 后，拒 pwsh / bash；ops_bash 照常能用</text>
+<rect x="580" y="120" width="580" height="64" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+<text x="870.0" y="148.7" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Fusion 按配置的顺序挑 shell</text>
+<text x="870.0" y="166.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">shells 默认 ops_bash → pwsh → bash，取第一个读得懂的；都没有返回 not_run</text>
+<rect x="40" y="198" width="470" height="64" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="275.0" y="226.7" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">dsh-ops 让模型批量改文件用 ops_replace</text>
+<text x="275.0" y="244.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">它自己的提示也写着：精确改动用宿主 edit</text>
+<rect x="580" y="198" width="580" height="64" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+<text x="870.0" y="226.7" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Fusion v1 只出 edit / write 两个版本</text>
+<text x="870.0" y="244.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">不包 ops_replace；看计量里 edit_then_run 用得多不多再定</text>
+<rect x="40" y="276" width="470" height="64" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="275.0" y="304.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">PTC 模式：所有工具折叠进 run_code</text>
+<text x="275.0" y="322.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">模型直接调 edit_then_run 会报 UNKNOWN_TOOL</text>
+<rect x="580" y="276" width="580" height="64" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+<text x="870.0" y="304.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Fusion 只在 native 模式下有用</text>
+<text x="870.0" y="322.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">PTC 里 run_code 本来就能连着调 edit 和 shell，省的那一轮不存在</text>
+<rect x="40" y="354" width="470" height="64" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="275.0" y="382.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">ds-bot 接管 Bot 会话的压缩</text>
+<text x="275.0" y="400.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">外部调 compactRegion 直接被拒；summarize() 也被它包了一层</text>
+<rect x="580" y="354" width="580" height="64" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="870.0" y="382.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">OCC 只管非 Bot 会话</text>
+<text x="870.0" y="400.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">被拒一次就停手；不覆写 summarize()，不和 ds-bot 抢位置</text>
+<rect x="40" y="432" width="470" height="64" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="275.0" y="460.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">ds-bot 会把带密钥的请求重发一遍</text>
+<text x="275.0" y="478.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">在 llm/stream 里换掉密钥，再调一次 ctx.llm.stream</text>
+<rect x="580" y="432" width="580" height="64" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.6"/>
+<text x="870.0" y="460.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">Meter 不包 llm/stream</text>
+<text x="870.0" y="478.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">读原生 tokenUsage 投影，重发不会多算；只补压缩那次的 token</text>
+<rect x="40" y="510" width="470" height="64" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="275.0" y="538.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">ds-bot 在 execute 里给工具结果脱敏</text>
+<text x="275.0" y="556.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">密钥换成占位文字，post-execute 拿到的已经是脱敏后的</text>
+<rect x="580" y="510" width="580" height="64" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="870.0" y="538.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">存档只在 post-execute 做</text>
+<text x="870.0" y="556.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">只存模型本来会看到的那份；不去读 shell 自己落盘的原始文件</text>
+<rect x="40" y="588" width="470" height="64" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="275.0" y="616.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">三家都要起名字、存文件</text>
+<text x="275.0" y="634.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">dsh-ops 用 ops_ 前缀和 dsh-ops/ 目录，ds-bot 用 bot/ 目录</text>
+<rect x="580" y="588" width="580" height="64" rx="8" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.6"/>
+<text x="870.0" y="616.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">dsh-sol 只用全新的名字</text>
+<text x="870.0" y="634.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">edit_then_run、write_then_run、obs_recall；数据只写 dsh-sol/ 目录</text>
+<rect x="40" y="680" width="1120" height="176" rx="8" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.6"/>
+<text x="52.0" y="724.1" font-size="14" font-weight="bold" fill="#111827" text-anchor="start">dsh-sol 的五条防护规则（写进代码和测试）</text>
+<text x="52.0" y="743.7" font-size="13" font-weight="normal" fill="#374151" text-anchor="start">① 先探测再用：调 shell 之前先查工具名在不在；只看公开的工具名，代码里不写死别的插件的名字。</text>
+<text x="52.0" y="763.2" font-size="13" font-weight="normal" fill="#374151" text-anchor="start">② 不抢位置：不注册同名工具，不覆写 summarize()，不改别人的配置；数据只写自己的目录。</text>
+<text x="52.0" y="782.7" font-size="13" font-weight="normal" fill="#374151" text-anchor="start">③ 出错就让路：dsh-sol 自己出错时，原结果原样交回，只在账本记一行，不让会话坏掉。</text>
+<text x="52.0" y="802.2" font-size="13" font-weight="normal" fill="#374151" text-anchor="start">④ 不扩大暴露面：只存模型本来就看得到的内容，不复制别的插件或工具落盘的原始文件。</text>
+<text x="52.0" y="821.7" font-size="13" font-weight="normal" fill="#374151" text-anchor="start">⑤ 每个机制单独开关，默认全关：出了冲突，关一个开关就能隔离，不用卸载整个插件。</text>
+<rect x="40" y="876" width="1120" height="96" rx="8" fill="#fafafa" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="52.0" y="910.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="start">为什么不关 dsh-ops</text>
+<text x="52.0" y="929.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">dsh-ops 是你日常在用的工具链，关掉它测出来的结果不代表真实使用。上面 7 个冲突点都能在 dsh-sol 这一侧绕开，代价很小。</text>
+<text x="52.0" y="947.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">验证分两次：先装进干净的 web profile（没有 dsh-ops 和 ds-bot），确认能加载、能用；再和 dsh-ops 一起测上面这几条。</text>
+<path d="M 510.0 152.0 L 580.0 152.0" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#ah2563eb)"/>
+<path d="M 510.0 230.0 L 580.0 230.0" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#ah2563eb)"/>
+<path d="M 510.0 308.0 L 580.0 308.0" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#ah2563eb)"/>
+<path d="M 510.0 386.0 L 580.0 386.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 510.0 464.0 L 580.0 464.0" fill="none" stroke="#059669" stroke-width="1.5" marker-end="url(#ah059669)"/>
+<path d="M 510.0 542.0 L 580.0 542.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 510.0 620.0 L 580.0 620.0" fill="none" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#ah8b5cf6)"/>
+</svg>

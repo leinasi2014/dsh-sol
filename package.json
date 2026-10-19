@@ -1,0 +1,45 @@
+{
+  "name": "dsh-sol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SoL-Pi mechanisms for DeepSeek Harness: Meter, Action Fusion, ObservationPack, Evidence-Preserving Reducer and Online Context Compact, each off by default.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leinasi2014/dsh-sol.git"
+  },
+  "homepage": "https://github.com/leinasi2014/dsh-sol#readme",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "scripts",
+    "cordis.patch.yml",
+    "LICENSE",
+    "locale/*.json",
+    "icon.svg",
+    "docs/report.md",
+    "docs/overview.md",
+    "docs/diagrams.html",
+    "docs/diagrams"
+  ],
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "dsh": ">=0.2.1-rc.2 <0.3.0",
+    "node": "^22.19 || >=24"
+  },
+  "scripts": {
+    "test": "node --test",
+    "report": "node scripts/report.js"
+  }
+}

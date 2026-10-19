@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1030" viewBox="0 0 1240 1030">
+<style>text{font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Segoe UI',sans-serif;}</style>
+<defs>
+<marker id="ah0d9488" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0d9488"/></marker>
+<marker id="ah4b5563" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/></marker>
+<marker id="ahd1d5db" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d1d5db"/></marker>
+<marker id="ahdc2626" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40.0" y="42.0" font-size="22" font-weight="bold" fill="#111827" text-anchor="start">ObservationPack：大输出换成句柄，要看再按页回读</text>
+<text x="40.0" y="68.0" font-size="13" font-weight="normal" fill="#6b7280" text-anchor="start">原文一字不丢地存进存档，上下文里只留一个固定不变的占位符。</text>
+<text x="330.0" y="108.0" font-size="15" font-weight="bold" fill="#0d9488" text-anchor="middle">① 工具返回时：存档并替换</text>
+<text x="900.0" y="108.0" font-size="15" font-weight="bold" fill="#0d9488" text-anchor="middle">② 模型想看细节时：按页回读</text>
+<rect x="180" y="125" width="300" height="44" rx="22.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="330.0" y="151.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">工具结果到了（post-execute）</text>
+<polygon points="150.0,200.0 510.0,200.0 530.0,228.0 510.0,256.0 150.0,256.0 130.0,228.0" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="330.0" y="223.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">纯文本、不是错误、不是 read 工具？</text>
+<text x="330.0" y="242.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">不是嵌套调用、Fusion 结果或 Reducer 回执</text>
+<polygon points="150.0,290.0 510.0,290.0 530.0,318.0 510.0,346.0 150.0,346.0 130.0,318.0" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="330.0" y="322.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">超过阈值吗？（默认 10 KiB）</text>
+<rect x="130" y="380" width="400" height="56" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="330.0" y="403.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">收到的内容写进存档</text>
+<text x="330.0" y="422.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">objects/&lt;sha256&gt;.txt；存的就是模型本来会看到的那份</text>
+<polygon points="150.0,470.0 510.0,470.0 530.0,498.0 510.0,526.0 150.0,526.0 130.0,498.0" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="330.0" y="502.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">存档成功了吗？</text>
+<rect x="130" y="560" width="400" height="136" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="330.0" y="587.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">上下文里换成占位符</text>
+<text x="330.0" y="606.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">id：obs_ 加 24 位十六进制</text>
+<text x="330.0" y="624.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">原始字节数、行数、估计的 token 数</text>
+<text x="330.0" y="642.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">开头和结尾的完整行，各约 512 字节</text>
+<text x="330.0" y="660.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">提示：用 obs_recall 按页回读</text>
+<text x="330.0" y="678.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">additionalContexts 原样带上，提醒不能丢</text>
+<rect x="155" y="722" width="350" height="50" rx="25.0" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="330.0" y="751.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">账本记一行；模型从第一次起就只看到占位符</text>
+<rect x="155" y="804" width="350" height="46" rx="23.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="330.0" y="831.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">原样交给模型，不改</text>
+<rect x="750" y="125" width="300" height="44" rx="22.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="900.0" y="151.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">模型调 obs_recall { id, offset }</text>
+<polygon points="750.0,200.0 1050.0,200.0 1070.0,228.0 1050.0,256.0 750.0,256.0 730.0,228.0" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="900.0" y="223.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">id 和 offset 都有效？</text>
+<text x="900.0" y="242.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">id 格式对、存档里有，offset 不超过大小</text>
+<rect x="1100" y="205" width="120" height="46" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+<text x="1160.0" y="223.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">报错</text>
+<text x="1160.0" y="242.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">写明原因</text>
+<rect x="730" y="290" width="340" height="56" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="900.0" y="313.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">从 offset 读一页</text>
+<text x="900.0" y="332.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">最多 16 KiB 或 400 行，切在 UTF-8 字符边界</text>
+<rect x="730" y="380" width="340" height="56" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="900.0" y="403.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">返回这一页，带 next_offset 和 eof</text>
+<text x="900.0" y="422.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">账本记一行 recall</text>
+<polygon points="750.0,470.0 1050.0,470.0 1070.0,498.0 1050.0,526.0 750.0,526.0 730.0,498.0" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+<text x="900.0" y="502.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">读到结尾了吗？（eof）</text>
+<rect x="800" y="560" width="200" height="44" rx="22.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="900.0" y="586.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">读完，结束</text>
+<rect x="680" y="630" width="540" height="112" rx="8" fill="#fafafa" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="692.0" y="657.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="start">存档安全</text>
+<text x="692.0" y="675.2" font-size="11" font-weight="normal" fill="#374151" text-anchor="start">位置：$DSH_HOME/dsh-sol/&lt;sessionId&gt;/objects/</text>
+<text x="692.0" y="691.8" font-size="11" font-weight="normal" fill="#374151" text-anchor="start">符号链接一律拒绝；id 先过正则校验再拼路径</text>
+<text x="692.0" y="708.2" font-size="11" font-weight="normal" fill="#374151" text-anchor="start">对象已存在时核对大小和哈希，对不上就不替换</text>
+<text x="692.0" y="724.8" font-size="11" font-weight="normal" fill="#374151" text-anchor="start">和 ds-bot 同装时，密钥在 execute 里已抹掉，这里存的是脱敏后的</text>
+<rect x="680" y="750" width="540" height="96" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="692.0" y="775.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="start">测试要证明的（不是运行时步骤）</text>
+<text x="692.0" y="794.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">各页拼起来和原文逐字节相等，含多字节字符</text>
+<text x="692.0" y="812.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">存档的 sha256 等于原文哈希</text>
+<text x="692.0" y="830.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">同一个结果多次替换，得到的占位符完全相同</text>
+<rect x="40" y="880" width="1160" height="120" rx="8" fill="#fafafa" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="52.0" y="908.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="start">和 SoL-Pi 原版的区别</text>
+<text x="52.0" y="927.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">原版在发请求前临时改写：前 2 次请求照发全文，第 3 次起换成占位符，会话历史本身不动。</text>
+<text x="52.0" y="945.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">DSH 不能在发送前改消息，只能在工具结果回来时替换，或事后持久替换旧结果。效果接近，因为原版的占位符本来就固定不变。</text>
+<text x="52.0" y="963.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">超过约 12500 token 的输出 DSH 原生已经落盘，dsh-sol 主要补 10 KiB 到这个阈值之间的一段。</text>
+<text x="52.0" y="981.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">执行顺序：原生 spill 用 prepend 挂在最外层，dsh-sol 不用 prepend，所以先替换，spill 只兜底没被替换的结果（跨作用域的顺序待实测）。</text>
+<path d="M 630.0 90.0 L 630.0 860.0" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="6 4"/>
+<path d="M 330.0 169.0 L 330.0 200.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 330.0 256.0 L 330.0 290.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 330.0 346.0 L 330.0 380.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 330.0 436.0 L 330.0 470.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 330.0 526.0 L 330.0 560.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 330.0 696.0 L 330.0 722.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 530.0 228.0 L 580.0 228.0 L 580.0 827.0 L 505.0 827.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 530.0 318.0 L 580.0 318.0" fill="none" stroke="#4b5563" stroke-width="1.5"/>
+<path d="M 530.0 498.0 L 580.0 498.0" fill="none" stroke="#4b5563" stroke-width="1.5"/>
+<path d="M 900.0 169.0 L 900.0 200.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 1070.0 228.0 L 1100.0 228.0" fill="none" stroke="#dc2626" stroke-width="1.5" marker-end="url(#ahdc2626)"/>
+<path d="M 1070.0 318.0 L 1160.0 318.0 L 1160.0 251.0" fill="none" stroke="#dc2626" stroke-width="1.5" marker-end="url(#ahdc2626)"/>
+<path d="M 900.0 256.0 L 900.0 290.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 900.0 346.0 L 900.0 380.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 900.0 436.0 L 900.0 470.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 900.0 526.0 L 900.0 560.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<path d="M 730.0 498.0 L 700.0 498.0 L 700.0 147.0 L 750.0 147.0" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#ah0d9488)"/>
+<rect x="319.5" y="264.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="330.0" y="277.0" font-size="11" fill="#0d9488" text-anchor="middle">是</text>
+<rect x="319.5" y="354.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="330.0" y="367.0" font-size="11" fill="#0d9488" text-anchor="middle">是</text>
+<rect x="319.5" y="534.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="330.0" y="547.0" font-size="11" fill="#0d9488" text-anchor="middle">是</text>
+<rect x="544.5" y="219.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="555.0" y="232.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+<rect x="544.5" y="309.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="555.0" y="322.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+<rect x="531.0" y="467.0" width="98.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="580.0" y="480.0" font-size="11" fill="#4b5563" text-anchor="middle">否（出错也一样）</text>
+<rect x="1074.5" y="205.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="1085.0" y="218.0" font-size="11" fill="#dc2626" text-anchor="middle">否</text>
+<rect x="1138.5" y="281.0" width="43.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="1160.0" y="294.0" font-size="11" fill="#dc2626" text-anchor="middle">读失败</text>
+<rect x="889.5" y="264.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="900.0" y="277.0" font-size="11" fill="#0d9488" text-anchor="middle">是</text>
+<rect x="889.5" y="534.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="900.0" y="547.0" font-size="11" fill="#0d9488" text-anchor="middle">是</text>
+<rect x="673.0" y="264.0" width="54.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="700.0" y="277.0" font-size="11" fill="#0d9488" text-anchor="middle">否，再调</text>
+</svg>

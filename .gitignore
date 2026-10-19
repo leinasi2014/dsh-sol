@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+docs/notes/*/
+docs/notes/*-setup.md
+*.tgz
+*.tar
+*.tar.gz
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+*.swp

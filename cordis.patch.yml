@@ -1,0 +1,35 @@
+# One row for the whole plugin. The row itself starts disabled so installing the
+# bundle changes nothing, and every mechanism below has its own switch, also off.
+# A patch replaces a row's whole `config`, so a user override must restate it.
+#
+# `actionFusion.shells` is the order in which shell tools are tried; the first one
+# registered for the calling agent wins. Leave it out to get the default
+# [ops_bash, pwsh, bash] — a profile without dsh-ops simply skips the first entry.
+# The Reducer uses the same list, so there is only one place to name a shell.
+#
+# `observationPack.thresholdBytes` is the size above which a tool result is
+# archived and replaced by a handle the model reads back with `obs_recall`.
+# 10240 bytes is the default; raising it means fewer replacements.
+#
+# `reducer` sends log text to a model, so it stays off and has **no default
+# provider or model**: set both, or nothing leaves the machine. Once it is on,
+# every failed shell result above 4 KiB that does not look like it carries a
+# secret is sent to the model you name.
+#
+# `occ.dryRun` defaults to true: it records what it would compact and compacts
+# nothing. Set it to false only after the dry-run lines in the ledger look right.
+- insert:
+    - id: sol
+      name: dsh-sol
+      disabled: true
+      config:
+        meter:
+          enabled: false
+        actionFusion:
+          enabled: false
+        observationPack:
+          enabled: false
+        reducer:
+          enabled: false
+        occ:
+          enabled: false

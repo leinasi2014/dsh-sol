@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1100" viewBox="0 0 1200 1100">
+<style>text{font-family:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Segoe UI',sans-serif;}</style>
+<defs>
+<marker id="ah16a34a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/></marker>
+<marker id="ah4b5563" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/></marker>
+<marker id="ah7c3aed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/></marker>
+<marker id="ahdc2626" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40.0" y="42.0" font-size="22" font-weight="bold" fill="#111827" text-anchor="start">Online Context Compact v1：过了计划边界、占用过线才压</text>
+<text x="40.0" y="68.0" font-size="13" font-weight="normal" fill="#6b7280" text-anchor="start">默认干跑：只往账本记“本来会压”，不真压；用真实数据定好阈值再打开。只管非 Bot 会话。</text>
+<rect x="170" y="100" width="380" height="44" rx="22.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="360.0" y="126.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">模型更新计划（todo_write，整表替换）</text>
+<rect x="160" y="172" width="400" height="56" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="195.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">和内存里上一份 todos 按 content 对比</text>
+<text x="360.0" y="214.3" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">不读 todos 投影：它在 turn/start 会被清空</text>
+<polygon points="180.0,256.0 540.0,256.0 560.0,284.0 540.0,312.0 180.0,312.0 160.0,284.0" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="288.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">有一条从未完成变成 completed？</text>
+<rect x="620" y="262" width="220" height="44" rx="22.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="730.0" y="288.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">不处理，照常继续</text>
+<rect x="160" y="340" width="400" height="44" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="366.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">记一个步骤边界</text>
+<rect x="160" y="412" width="400" height="48" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="360.0" y="440.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">下一步开始（agent/pre-step）</text>
+<polygon points="180.0,488.0 540.0,488.0 560.0,516.0 540.0,544.0 180.0,544.0 160.0,516.0" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="520.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">这个会话被 ds-bot 拒过吗？</text>
+<polygon points="180.0,572.0 540.0,572.0 560.0,604.0 540.0,636.0 180.0,636.0 160.0,604.0" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="600.6" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">占用过触发线了吗？</text>
+<text x="360.0" y="618.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">min(0.5 × 窗口, 0.85 × 原生触发线)；窗口拿不到就跳过</text>
+<rect x="620" y="582" width="240" height="44" rx="22.0" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="740.0" y="608.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">先不压，等下一个边界</text>
+<rect x="160" y="664" width="400" height="64" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="691.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">选一段旧历史（保留尾部）</text>
+<text x="360.0" y="710.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">工具调用是否成对自己数，不 import；算不出就跳过</text>
+<polygon points="180.0,756.0 540.0,756.0 560.0,784.0 540.0,812.0 180.0,812.0 160.0,784.0" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="788.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">dryRun 开着吗？（默认开）</text>
+<rect x="620" y="756" width="540" height="56" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+<text x="890.0" y="779.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">账本记一行 occ-dry：占用率、选中的范围</text>
+<text x="890.0" y="798.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">不调压缩，照常继续</text>
+<rect x="160" y="840" width="400" height="76" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="866.4" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">调 compactRegion 压这一段</text>
+<text x="360.0" y="883.8" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">compaction 先按 preset 取，取不到用全局的</text>
+<text x="360.0" y="900.2" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">摘要用 DSH 原生提示，不覆写 summarize()</text>
+<rect x="620" y="846" width="540" height="64" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+<text x="890.0" y="873.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">压不成：busy 就让路，不重试</text>
+<text x="890.0" y="892.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="middle">被 ds-bot 拒：记住这个会话，以后不再试</text>
+<rect x="185" y="944" width="350" height="46" rx="23.0" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="360.0" y="971.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">回合不中断，照常进下一步</text>
+<rect x="860" y="172" width="300" height="64" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="1010.0" y="200.7" font-size="14" font-weight="bold" fill="#111827" text-anchor="middle">DSH 的 todo 没有 id</text>
+<text x="1010.0" y="218.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">只能按 content 文本对比，改了措辞就认不出</text>
+<rect x="640" y="92" width="520" height="64" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="652.0" y="112.4" font-size="14" font-weight="bold" fill="#111827" text-anchor="start">只管非 Bot 会话</text>
+<text x="652.0" y="129.8" font-size="11" font-weight="normal" fill="#374151" text-anchor="start">Bot 会话的压缩归 ds-bot 管，调 compactRegion 会被拒；</text>
+<text x="652.0" y="146.2" font-size="11" font-weight="normal" fill="#374151" text-anchor="start">被拒一次，这个会话就不再试</text>
+<rect x="640" y="340" width="520" height="200" rx="8" fill="#fafafa" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="652.0" y="381.9" font-size="14" font-weight="bold" fill="#111827" text-anchor="start">v1 砍掉的（依据 notes/step5-facts.md）</text>
+<text x="652.0" y="400.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">经济性模型：各 provider 的缓存计价没核实</text>
+<text x="652.0" y="418.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">冷却期、请求计数、隐藏消息续跑、自己注册 update_plan</text>
+<text x="652.0" y="436.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">覆写 summarize()、跨回合重建 todos、状态持久化</text>
+<text x="652.0" y="454.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start"></text>
+<text x="652.0" y="472.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">原生在 min(0.8W, W−O−64K) 时压：本机主力模型约 55%，</text>
+<text x="652.0" y="490.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">OCC 的增量只在“没到原生触发线、但已过计划边界”这一段。</text>
+<text x="652.0" y="508.4" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">pre-step 里每条路都 return next()，不调 next 等于否决整条链。</text>
+<path d="M 860.0 204.0 L 560.0 204.0" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#ahdc2626)"/>
+<path d="M 360.0 144.0 L 360.0 172.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 360.0 228.0 L 360.0 256.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 360.0 384.0 L 360.0 412.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 360.0 460.0 L 360.0 488.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 360.0 728.0 L 360.0 756.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 360.0 916.0 L 360.0 944.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 560.0 284.0 L 620.0 284.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 360.0 312.0 L 360.0 340.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 360.0 544.0 L 360.0 572.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 160.0 516.0 L 118.0 516.0 L 118.0 967.0 L 185.0 967.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 560.0 604.0 L 620.0 604.0" fill="none" stroke="#4b5563" stroke-width="1.5" marker-end="url(#ah4b5563)"/>
+<path d="M 360.0 636.0 L 360.0 664.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 560.0 784.0 L 620.0 784.0" fill="none" stroke="#16a34a" stroke-width="1.5" marker-end="url(#ah16a34a)"/>
+<path d="M 360.0 812.0 L 360.0 840.0" fill="none" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ah7c3aed)"/>
+<path d="M 560.0 878.0 L 620.0 878.0" fill="none" stroke="#dc2626" stroke-width="1.5" marker-end="url(#ahdc2626)"/>
+<rect x="579.5" y="275.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="590.0" y="288.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+<rect x="349.5" y="317.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="360.0" y="330.0" font-size="11" fill="#7c3aed" text-anchor="middle">是</text>
+<rect x="344.0" y="549.0" width="32.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="360.0" y="562.0" font-size="11" fill="#7c3aed" text-anchor="middle">没有</text>
+<rect x="85.5" y="751.0" width="65.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="118.0" y="764.0" font-size="11" fill="#4b5563" text-anchor="middle">拒过：不做</text>
+<rect x="579.5" y="595.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="590.0" y="608.0" font-size="11" fill="#4b5563" text-anchor="middle">否</text>
+<rect x="349.5" y="641.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="360.0" y="654.0" font-size="11" fill="#7c3aed" text-anchor="middle">是</text>
+<rect x="579.5" y="775.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="590.0" y="788.0" font-size="11" fill="#16a34a" text-anchor="middle">是</text>
+<rect x="349.5" y="817.0" width="21.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="360.0" y="830.0" font-size="11" fill="#7c3aed" text-anchor="middle">否</text>
+<rect x="574.0" y="869.0" width="32.0" height="18" rx="4" fill="#ffffff" fill-opacity="0.95"/>
+<text x="590.0" y="882.0" font-size="11" fill="#dc2626" text-anchor="middle">出错</text>
+</svg>
