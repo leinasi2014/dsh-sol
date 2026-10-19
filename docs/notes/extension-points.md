@@ -28,7 +28,7 @@
 - bundle 声明：`asar:dsh-experimental-ralph-bundle/package.json:35-39`（`"dsh": {"bundle": {"patch": "./cordis.patch.yml"}}`），`exports` 里导出 `./cordis.patch.yml`（:22）。【已核实】
 - patch 格式：`asar:dsh-base/cordis.patch.yml:15-` 是 `- insert: [ {id, name, config, disabled} ]`。注释（:1-13）：后面的 bundle patch 和用户 profile patch 按 **id 定位行，最后写入的赢**；patch **整体替换**该行的 `config`，不做深合并（app-boot README:204 也是这么说的）。`disabled` 可以是 `!!js` 表达式。【已核实】
 - 最小示例：`<reference-plugin>\cordis.patch.yml` 就是 `- insert: [{id: team-studio, name: <reference-plugin>}]`；package.json 的 `dsh.manifestVersion: 1`、`dsh.bundle.patch`、`dsh.client{platform:'web', external:[], inject:[...]}`、`exports{".", "./client"}`。【已核实】
-- profile 挂载：`<home>\.dsh\profiles\desktop\package.json:9-25`，`dsh.profile.bundles` 是一个有序列表（`@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-web-app`, `dsh-ops`, …, `ds-bot`），包本身放在 `dependencies`。profile 自己的 `cordis.patch.yml` 在所有 bundle 层之后应用（app-boot README:61）。plugin-manager 启用 bundle 时会**追加到列表末尾**（plugin-manager README:40）。【已核实】
+- profile 挂载：`<desktop-profile>\package.json:9-25`，`dsh.profile.bundles` 是一个有序列表（`@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-web-app`, `dsh-ops`, …, `ds-bot`），包本身放在 `dependencies`。profile 自己的 `cordis.patch.yml` 在所有 bundle 层之后应用（app-boot README:61）。plugin-manager 启用 bundle 时会**追加到列表末尾**（plugin-manager README:40）。【已核实】
 - 版本校验（这是硬约束）：`asar:dsh-app-boot/lib/index.js:279-299` `unmetRequirements`：如果有 `engines.dsh`，就**只**用它判断；否则 **每一个** `@deepseek-ai/dsh` / `@deepseek-ai/dsh-*` peerDependency 的范围都必须满足运行时版本（`includePrerelease: true`，:277）。运行时版本取自 app-boot 自己的 package.json（:271-275）。不满足的 bundle 会被跳过并列进 `skippedBundles`（app-boot README:50,54）。豁免写在 profile 的 `compatibility.json` 里（README:56）。【已核实】
   - 注意：`dsh-package-manifest/README.md:93` 说 "loaders 不强制 engines.dsh"——**这句已经过时**，和 app-boot 的代码矛盾，以代码为准。
   - 建议：插件写 `"engines": {"dsh": ">=0.2.1-rc.2 <0.3.0"}` 或者让 peer 用 `~0.2.1-rc.2` 之类，别钉死版本。
@@ -117,7 +117,7 @@
 - 往会话日志写自定义事件：`appendPluginRecord(session, 'plugin:<包名>/...', data)`（从 `@deepseek-ai/dsh-session` 导出），读回用 `pluginRecordOf(event)`。**但 README 明确说只限仓库内 `packages/experimental/` 的包使用，外部插件 "must not call it"**。直接 `session.append` 一个未知类型的事件不在支持范围内（未知事件需要 `ignorable` 标记，否则重开会话会失败——README:203）。
 
 证据：
-- `asar:dsh-session-persistence-jsonl/lib/index.js:750-753`（扩展名）、:908-932（`root/<projectKey(cwd)>/<encodeSegment(id)>/<generation log>`）。实测目录 `<home>\.dsh\sessions` 存在。【已核实】
+- `asar:dsh-session-persistence-jsonl/lib/index.js:750-753`（扩展名）、:908-932（`root/<projectKey(cwd)>/<encodeSegment(id)>/<generation log>`）。实测目录 `<DSH_HOME>\sessions` 存在。【已核实】
 - `asar:dsh-home-paths/lib/index.js:11-15,109-132`（`DSH_HOME` 环境变量 > 默认 `~/.dsh`；`dshHomePath(...segments)`）。【已核实】
 - storageDomain：`asar:dsh-storage-domain/README.md:12,36-58`（`defineDomain`、`ctx.storageDomain.open(spec)`、同步读、写入持久化后才 resolve、`domain/changed` 事件、要 `close()`）；不进会话日志、模型看不到（:12）。json 后端 `dsh-storage-json/README.md` Summary。【已核实】
 - plugin record：`asar:dsh-session/lib/index.js:1285-1314`（类型格式 `plugin:` + 小写段；返回 seq）、导出列表 :2052；限制 `dsh-session/README.md:68-70`。`session.append(type,data,{surfaceOp,sourceEventSeqs})` :1517-1538（会校验 surface 事件）。【已核实】

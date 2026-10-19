@@ -4,7 +4,7 @@
 所有结论都只读源码得出，没有运行验证。
 
 证据路径约定：
-- `A:` 表示 `<DSH-install>/resources/app.asar` 里的 `dsh/node_modules/@deepseek-ai/`，内容用 `asar-peek.mjs cat` 读出，行号就是 `lib/index.js` 自身的行号（副本放在 `<home>\.dsh\bot\workspace/<scratch>/tmp\<包名>.js`）。
+- `A:` 表示 `<DSH-install>/resources/app.asar` 里的 `dsh/node_modules/@deepseek-ai/`，内容用 `asar-peek.mjs cat` 读出，行号就是 `lib/index.js` 自身的行号（副本放在 `<scratch>\<包名>.js`）。
 - `O:` 表示旧版 0.2.0-rc.2 的解开副本 `<reference-runtime>\node_modules\@deepseek-ai\`。
 - 0.2.1 的 asar 里没有 `.d.ts`（`lib/types/` 下只有 `.js`）。类型签名引用的是 O: 里的 `dsh-tools/lib/types/index.d.ts`，并和 0.2.1 的 JS 实现逐项对照过。
 

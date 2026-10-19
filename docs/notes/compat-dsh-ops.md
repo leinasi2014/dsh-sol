@@ -1,6 +1,6 @@
 # dsh-sol 与 dsh-ops / ds-bot 的兼容性，以及插件规范符合度
 
-范围：desktop profile 里的 dsh-ops 0.3.0、ds-bot 0.1.7（`<home>\.dsh\profiles\desktop\package.json:5-24`），DSH 0.2.1-rc.2。
+范围：desktop profile 里的 dsh-ops 0.3.0、ds-bot 0.1.7（`<desktop-profile>\package.json:5-24`），DSH 0.2.1-rc.2。
 来源：SolArch（规范）、SolDev（运行时冲突）、SolQA（交叉复核），Researcher 对关键证据逐条抽查过原文。
 路径缩写：`asar:` 指 `<DSH-install>/resources/app.asar` 里的 `dsh/node_modules/@deepseek-ai/`；`ops/`、`bot/` 分别指 profile 里 `node_modules/dsh-ops/`、`node_modules/ds-bot/`。
 

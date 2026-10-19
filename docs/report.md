@@ -437,9 +437,13 @@ SoL-Pi 仓库里没有 benchmark 脚本，测法要我们自己做【已核实�
 - **装了 dsh-ops 以后，Reducer 只处理 4 KiB 到 64000 字节之间的失败日志**：ops_bash 超过 64000 字节就截断（`dsh-ops/lib/shells.js:79`），Reducer 看到截断就不压（2c 场景 2 证实）。更大的日志只走 ObservationPack。
 - **Reducer 的延迟**：压缩成功的那次工具调用 4.8 秒，不压的 1.2–1.4 秒，推断调模型大约占 3.4 秒。
 - **账本里 `requests > 0` 而 `usageTotal` 全 0 的会话要剔除**：这类会话的消息是 relay 拼接的（判据：`assistant/attempt` 为 0、`toolu_relay_` 前缀的 tool-call 上千条），本来就不带 usage，`bucketsFromUsage(undefined)` 返回全 0 是定义行为，不是漏记，也不代表某个 provider 不上报用量。分析账本或做 A/B 时先过滤掉它们，否则会把分母拉大、把节省率压低。详见 [load-check.md 第 8 节](notes/load-check.md)。
+- **超过 64 KB 的输出是 dsh-ops 截断 + ObservationPack 替换，串联两道，不是各管一段**：dsh-ops 先把正文（stdout、stderr 各算）截到 64000 字节，末尾追加 `[output truncated; full output: <spillPath>]`（`dsh-ops/lib/shells.js:79`、`:1077-1078`）；这段文本仍远大于 ObservationPack 的 10240 字节阈值，所以接着被换成占位符。实测 77055 字节的输出，占位符写的是 `original_bytes: 64136`（64000 + 136 字节标记），正是「先截后归档」。**标记行通常落在尾预览里，但不保证**：截断标记**不是**最后一个完整行——命令同时失败时，它后面还跟着 `[exit code: N]`（实测 `original_bytes: 64151` = 64000 + 136 + 15）；这两行都很短、合起来约 150 字节，一般会一起落进占位符尾部 512 字节的预览，标记落到预算之外时才需要 `obs_recall` 那一跳。标记文本见 `dsh-ops/lib/shells.js:846`，那里的标签位在拿不到路径时写的是 `(unavailable)` 而不是路径。恢复链路本身是通的：占位符 → `obs_recall` 读回那段含 `spillPath` 的文本 → `read` 该文件；`read` 在 `NEVER_REPLACE` 里，所以这条链不会自噬（`lib/observation.js:58-63`）。
+- **哪些结果不会被换成占位符**：`read`、`obs_recall`、`edit_then_run`、`write_then_run` 四个工具；`isError` 为真的结果、嵌套调用（Fusion 的内层命令）、带 Reducer 回执的结果、小于阈值的文本（`lib/observation.js:58-63`、`:349-357`）。注意 DSH 只对**工具级**错误打 `isError`；**命令非零退出不算**，这类结果仍会进占位符——好在**退出码通常落在尾预览里、能直接看到**，全文可以用 `obs_recall` 取回。
 
 ### 5.4 还没做的
 
 - 除 web 默认 preset 以外的 preset。
 - A/B：到底省了多少 token，质量有没有下降。
+- **v0.2：让 `spillPath` 在占位符里确定可见**。现在它**通常**落在尾部 512 字节的预览里（截断标记和可能的 `[exit code: N]` 两行都很短、约 150 字节），但这取决于路径长度和剩余空间，不是保证；下一版在占位符里显式写出该路径，不再依赖预览是否覆盖到。本次不改代码。
+- **v0.2：归档回收与去重**。`objects/` 只增不减（没有 unlink、prune 或保留期）；而且超过 64 KB 的输出会**存两份**——dsh-ops 的 spill 文件加 ObservationPack 的归档，内容寻址只对完全相同的内容去重。长会话的磁盘因此是双份增长。下一版加保留策略。
 

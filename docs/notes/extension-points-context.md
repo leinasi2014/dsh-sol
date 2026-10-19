@@ -92,7 +92,7 @@
 - 在 pre-step 里压缩时，回合本来就没结束，压缩完直接进入下一步，**不需要额外开一轮**。这正是 Online Compact 想要的“步骤之间压完接着跑”。
 - 空闲时压缩：`compactNow` → `runMaintenance`。maintenance 期间调 `agent.followup()` 会被锁存（`wakeDriver` 设 `wakeRequested`，`dsh-agent-loop:854-858`），maintenance 结束后自动唤醒（`:841`）。所以“压缩完再 followup 一条消息”就能开新一轮。
 
-### 2.5 本机 profile 现状（`<home>\.dsh\profiles\desktop\cordis.yml`），已核实
+### 2.5 本机 profile 现状（`<desktop-profile>\cordis.yml`），已核实
 - 根级 `compaction-basic` / `command-compact` / `tool-result-pruner` 都是 `disabled: true`（第 382-387、436-438 行）。`token-meter` 在根级启用（380）。
 - 每个 agent preset 里有 `id: compaction` 的 `cordis:group`，带 `isolate: {compaction: true, toolResultPruner: true}`（第 840-855 行；1004、1092、1267 行同理）。也就是说压缩服务**按 preset 隔离**，根级 ctx 上很可能取不到 `compaction`。插件应该在 agent 作用域里取（`agent.ctx.get('compaction')`，推断），或者把自己挂进同一个 group。
 - `session-checkpoint-policy` 启用（434）。

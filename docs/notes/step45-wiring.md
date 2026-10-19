@@ -521,6 +521,8 @@ Researcher 另建议账本行加 `elapsedMs` 方便 A/B，这属于新增字段�
 
 ## 20. 相邻 user 消息合并（2026-10-19）
 
+> **2026-10-19 已整块删除，本节只作调研记录保留。** 这个机制在 DSH 里不可能生效：`agent/pre-step` 返回的 messages 不是最终结果，`step()` 会再追加一次 runtime-context（`dsh-agent-loop/lib/index.js:1065-1072`），合并后相邻 user 的条数不变、内容还重复。它想解决的那条「相邻 user 之间被插一条 assistant `OK`」的真正根因在上游中转的请求转换里硬编码（`converter.rs:1877`，`history.push(Message::Assistant("OK"))`），改 DSH 这一侧打不到。`lib/adjacent.js`、`test/adjacent.test.js` 和配置键都已删除，配置里再写 `adjacentUsers` 会报 `unknown key`。
+
 ### 20.1 问题
 
 某类 `anthropic-messages` 中转遇到两条相邻的 user 消息，会在中间自己插一条 assistant「OK」。DSH 的会话日志里没有这条，只有模型看得到，于是模型以为那是自己回的，下一轮就去道歉。

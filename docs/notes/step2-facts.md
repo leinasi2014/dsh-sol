@@ -2,7 +2,7 @@
 
 日期：2026-10-18。只读核实，没写代码。基准 DSH 0.2.1-rc.2，dsh-ops 0.3.0。
 
-证据记法：`asar:<包>/<文件>:行` 是 app.asar 里的；`dsh-ops:<文件>:行` 是 `<home>\.dsh\profiles\desktop\node_modules\dsh-ops\` 下的。
+证据记法：`asar:<包>/<文件>:行` 是 app.asar 里的；`dsh-ops:<文件>:行` 是 `<desktop-profile>\node_modules\dsh-ops\` 下的。
 
 **先说四条会影响设计的结论：**
 
