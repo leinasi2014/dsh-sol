@@ -64,6 +64,7 @@
 - **原因在环境，不在 dsh-sol**【已核实对照】：同样的配置下，让模型直接调内置 `pwsh` 跑 `Get-Date`（`j-plainpwsh`），也是 `exit code: 3221225794`。
   - 推断：web 服务是从 SSH 会话（session 0，没有桌面）里起的，pwsh 沙箱起的子进程初始化失败。
   - 阶段 2 要跑命令，得在 <test-user> 的桌面会话里起 web 服务，比如用计划任务，不能直接从 SSH 起。
+  - **2026-10-19 更正（原文保留，只改解释）**：这个归因不成立。2026-10-19 全盘扫过 `Program Files`、`Program Files (x86)`、DSH 安装目录和 `<lab>`，**找不到 `pwsh.exe`**——当时机器上没装 PowerShell 7。装上之后**从 SSH 直起**即可用：`pwsh` 调用 4 次、`3221225794` 失败 **0** 次、命令真在 shell 里跑、模型拿到完整 400 条匹配。所以 `0xC0000142`（STATUS_DLL_INIT_FAILED）的成因是 **PowerShell 7 缺失**（叠加沙箱策略），与会话类型无关。
 - **Meter 有记账**【已核实，原文见 v2 包 `ledger/`】：`i-on` 会话的账本 `<home>\.dsh\dsh-sol\session-1eb61325-330c-4b2b-b21a-be272c0fa548\ledger.jsonl` 有一行 `kind: "turn"`，`baseline: "zero"`，`requests: 2`，usage 四个字段都在（`cacheWriteTokens` 为 0，那轮没写缓存）。
   - 注意 1：账本目录名带 `session-` 前缀，因为 sessionId 本身就带这个前缀。
   - 注意 2：`result.txt:54/68/82/115` 那四行 `ledger: none at …` 是我的检查脚本路径拼错了（`stage1-turn.ps1:33` 把前缀去掉了），是误报。脚本已改，阶段 2 起不会再出。
