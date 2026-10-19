@@ -64,8 +64,7 @@
 - **原因在环境，不在 dsh-sol**【已核实对照】：同样的配置下，让模型直接调内置 `pwsh` 跑 `Get-Date`（`j-plainpwsh`），也是 `exit code: 3221225794`。
   - 推断：web 服务是从 SSH 会话（session 0，没有桌面）里起的，pwsh 沙箱起的子进程初始化失败。
   - 阶段 2 要跑命令，得在 <test-user> 的桌面会话里起 web 服务，比如用计划任务，不能直接从 SSH 起。
-  - **2026-10-19 更正（原文保留，只改解释）**：这个归因不成立。2026-10-19 全盘扫过 `Program Files`、`Program Files (x86)`、DSH 安装目录和 `<lab>`，**找不到 `pwsh.exe`**——当时机器上没装 PowerShell 7。装上之后**从 SSH 直起**即可用：`pwsh` 调用 4 次、`3221225794` 失败 **0** 次、命令真在 shell 里跑、模型拿到完整 400 条匹配。
-  - **但成因不是「没有 PowerShell」**：`dsh-pwsh-local/lib/index.js:26-32` 的候选表最后一项是 5.1 的 `System32\WindowsPowerShell\v1.0\powershell.exe`，所以机器上**一直有 5.1 可用**，10-18 桌面会话里跑通的就是这个回退（`a-pwsh` exit 0、`pwsh-ok`）。10-19 从 SSH 直起时 5.1 也起不来（`0xC0000142`，STATUS_DLL_INIT_FAILED），装 PowerShell 7 后仍失败 3 次，**放宽沙箱 preset 之后才通过**。所以准确说法是：**5.1 回退在 session 0 + 默认沙箱下起不来；装上 PowerShell 7 并放宽沙箱后，SSH 直起即可用，因此不需要桌面会话。**
+  - **2026-10-19 更正（原文保留，只改适用范围）**：上面两条对当时的配置成立，但不能推广。10-19 全盘扫过 `Program Files`、`Program Files (x86)`、DSH 安装目录和 `<lab>`，**没有 `pwsh.exe`**，`pwsh` 工具走的是 **5.1 回退**（`dsh-pwsh-local/lib/index.js:23-34` 的 `candidatePwshPaths`，最后一项在 `:32`：`System32\WindowsPowerShell\v1.0\powershell.exe`）——5.1 在 session 0 里起不来、在桌面会话里能起，10-18 那两次观察正是这个差别。装上 PowerShell 7.6.7 并把沙箱 `defaultPreset` 放宽到 `danger-full-access` 之后，**SSH 直起即可用**：`pwsh` 调用 4 次、`3221225794` 失败 0 次、模型拿到完整 400 条匹配。**该作废的是「不能直接从 SSH 起」这句；「session 0」这个解释当时是对的。** 结论：不需要桌面会话。
 - **Meter 有记账**【已核实，原文见 v2 包 `ledger/`】：`i-on` 会话的账本 `<home>\.dsh\dsh-sol\session-1eb61325-330c-4b2b-b21a-be272c0fa548\ledger.jsonl` 有一行 `kind: "turn"`，`baseline: "zero"`，`requests: 2`，usage 四个字段都在（`cacheWriteTokens` 为 0，那轮没写缓存）。
   - 注意 1：账本目录名带 `session-` 前缀，因为 sessionId 本身就带这个前缀。
   - 注意 2：`result.txt:54/68/82/115` 那四行 `ledger: none at …` 是我的检查脚本路径拼错了（`stage1-turn.ps1:33` 把前缀去掉了），是误报。脚本已改，阶段 2 起不会再出。
