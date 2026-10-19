@@ -527,7 +527,7 @@ Researcher 另建议账本行加 `elapsedMs` 方便 A/B，这属于新增字段�
 
 某类 `anthropic-messages` 中转遇到两条相邻的 user 消息，会在中间自己插一条 assistant「OK」。DSH 的会话日志里没有这条，只有模型看得到，于是模型以为那是自己回的，下一轮就去道歉。
 
-DSH 天然会产生相邻 user：`agent/pre-step` 把 runtime context 作为独立一条消息追加（`asar:dsh-agent-loop/lib/index.js:909-917`），`step()` 再按 decision 逐条 append（`:1067-1072`），末尾那次补偿追加在 `:1073`。
+DSH 天然会产生相邻 user：`agent/pre-step` 把 runtime context 作为独立一条消息追加（`asar:dsh-agent-loop/lib/index.js:909-918`），`step()` 再按 decision 逐条 append（`:1067-1072`），末尾那次补偿追加在 `:1073`。
 
 ### 20.2 为什么钩子放在 `agent/pre-step`，不在 `llm/stream`
 

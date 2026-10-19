@@ -59,7 +59,7 @@ const refuseCompaction = () => Promise.reject(new Error(
 
 ### 2.1 `agent/pre-step`，已核实
 
-- 派发点：`asar:dsh-agent-loop/lib/index.js:909-915`，payload 是 `{ messages: claimed, turn, step, signal }`，返回 `{kind:'enter'|'reject', ...}`。
+- 派发点：`asar:dsh-agent-loop/lib/index.js:909-928`，payload 是 `{ messages: claimed, turn, step, signal }`，返回 `{kind:'enter'|'reject', ...}`。
 - **payload 里会额外加上 `agent`**：`agentEvents` 的 `fused = (payload) => ({...payload, agent})`（`asar:dsh-agent/lib/index.js:243-246`），waterfall 走 `:268-271`，carrier 由 `:230-232` 的 `agentCarrier` 建。
 - 所以根级插件写 `ctx.on('agent/pre-step', async ({ agent, signal }, next) => …)` 就能拿到 `agent`。范本：`asar:dsh-plan-mode/lib/index.js:151-153` 就是这么写的，而且 plan-mode 是**根级**服务（`static inject = ['tools','systemPrompt','sessionProjections']`，`:134-138`），证明根级能收到 agent 事件。
 - **根级监听器收得到 agent 作用域的事件**：`scopeTarget` 的 filter 对未打 scope 标签的 listener 一律放行（`asar:dsh-scope/lib/index.js:328-334`，"admits untagged listeners globally"）。
