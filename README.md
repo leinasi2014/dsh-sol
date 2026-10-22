@@ -60,6 +60,7 @@ dsh-sol 是 DeepSeek Harness（DSH）的一个插件，目标是让模型干同�
 - 随便跑一个回合，然后看 `$DSH_HOME/dsh-sol/<会话 id>/ledger.jsonl` 有没有新行，`kind` 是 `turn`，带四个 token 桶和 `requests`。
 - 出汇总：在插件目录里跑 `node scripts/report.js`，可以加 `--home <目录>`、`--group 名字=会话id前缀`、`--json`。
 - 账本里标 `baseline: "unknown"` 的会话（比如插件装上之前就开着的会话），汇总时会单独列出来，不混进对比。这是正常的。
+- 请求数和压缩用量由公开的 host-only 投影从会话历史重建，恢复会话或重新加载插件后仍累计；fork 的父前缀不计入这两项。
 
 **Action Fusion**
 - 新开一个会话，工具列表里应该出现 `edit_then_run` 和 `write_then_run`。没出现的话，先看 `actionFusion.enabled` 是不是 true，再看当前是不是 PTC 模式（见下面的限制）。
@@ -94,6 +95,7 @@ Fusion 不写账本，看工具结果里的标记就行。
     - 处理过程中抛了异常（包括模型服务报错、存档写失败），记成 `error: <原因>`。
   - 回执没通过校验，整份作废：`invalid-json`、`schema-mismatch`、`unverifiable-quote`、`missing-failure-evidence`、`receipt-not-smaller`。
 - 只有真的发了请求才会有 `usage`，失败的请求也会记。这些行就是外发记录，可以拿来审计。
+- 回执中的 `source_artifact` 是原文存档路径，可用 `read` 指定行范围查看；超长行可通过 shell 按字节分段读取。Reducer 不生成 ObservationPack 的 `obs_…` 编号。
 - 成功的命令、输出不到 4 KiB 的命令、转到后台还在跑的命令，都不处理，也不记账。
 
 **OCC**（默认干跑）

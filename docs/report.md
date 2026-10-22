@@ -169,7 +169,7 @@ SoL-Pi 依赖的是 Pi 的扩展 API。DSH 只用了 Pi 的 `pi-ai`，作为 LLM
         - 不需要 `=` 或 `:` 也能命中的写法：`-----BEGIN … PRIVATE KEY-----`、`sk-…`、`ghp_…`、`AKIA…`，以及 URL 里带的 `user:pass@`。
         - 误判的结果只是这条不压缩，原样保留，所以宁可多判。它仍然只是尽力而为，不能当成脱敏。
       - `ctx.llm` 在调用时用 `ctx.get('llm')` 取，取不到就跳过，账本记一条原因。不写进 `inject`：写进去的话，Reducer 没开、只开了 Meter 时，缺 llm 也会让整个插件不激活（Researcher 的 [load-check.md](notes/load-check.md)）。
-  - 默认超时 `reducer.timeoutMs: 20000`（SoL-Pi 是 90000）。卡住的是用户这一步，等 90 秒太久。超时用 `AbortSignal.any([exec.signal, AbortSignal.timeout(...)])`，读流的循环里也要检查 `signal.aborted`。
+  - 默认超时 `reducer.timeoutMs: 20000`（SoL-Pi 是 90000）。超时用合并的 AbortSignal；等待每个流 chunk 时同时响应取消，即使适配器不再返回 chunk 或清理挂住，也解除本地等待并保留原输出和已收到的用量。
   - 回执的五项校验（JSON、schema、引文是原文的精确子串、失败时必须带证据、比原文小），有一项不过，整份回执就作废，保留原结果。
 
 ### 2.4 Online Context Compact：计划步骤完成后，按经济性主动压缩并继续

@@ -102,6 +102,18 @@ export function createFakeCtx({ projectionState = {}, throwOnStateOf = false, se
   const effects = []
   /** @type {string[]} */
   const warnings = []
+  const projections = new Map()
+  function projectionCell(entry, session) {
+    let cell = entry.cells.get(session)
+    if (cell === undefined) {
+      const events = session.snapshotEvents?.() ?? []
+      let state = entry.definition.init(session.header, session.inheritedEventCount ?? 0)
+      for (const event of events) state = entry.definition.apply(state, event)
+      cell = { state, seq: events.at(-1)?.seq ?? -1 }
+      entry.cells.set(session, cell)
+    }
+    return cell
+  }
   const fakeTools = createFakeTools()
   /** The agent `agent/pre-step` is fused with when the emitter passes none. */
   const defaultAgent = agent
@@ -157,6 +169,18 @@ export function createFakeCtx({ projectionState = {}, throwOnStateOf = false, se
       return () => dispose()
     },
     sessionProjections: {
+      register(definition) {
+        let entry = projections.get(definition.key)
+        if (entry === undefined) {
+          entry = { definition, cells: new WeakMap(), refs: 0 }
+          projections.set(definition.key, entry)
+        }
+        entry.refs += 1
+        return () => {
+          entry.refs -= 1
+          if (entry.refs === 0) projections.delete(definition.key)
+        }
+      },
       /**
        * Return the configured state for a key.
        * @param {object} session - the session.
@@ -164,8 +188,9 @@ export function createFakeCtx({ projectionState = {}, throwOnStateOf = false, se
        * @returns {unknown} the state.
        */
       stateOf(session, key) {
-        void session
         if (throwOnStateOf) throw new Error('projection unavailable')
+        const entry = projections.get(key)
+        if (entry !== undefined) return projectionCell(entry, session).state
         return projectionState[key]
       },
     },
@@ -184,6 +209,19 @@ export function createFakeCtx({ projectionState = {}, throwOnStateOf = false, se
    * @returns {void}
    */
   function emit(name, ...args) {
+    if (name === 'session/event') {
+      const [session, event] = args
+      for (const entry of projections.values()) {
+        const cell = projectionCell(entry, session)
+        if (event.seq > cell.seq) {
+          cell.state = entry.definition.apply(cell.state, event)
+          cell.seq = event.seq
+        }
+      }
+    }
+    if (name === 'session/disposed') {
+      for (const entry of projections.values()) entry.cells.delete(args[0])
+    }
     const fused = name === 'agent/pre-step' && args[0] !== null && typeof args[0] === 'object'
       ? [{ ...args[0], agent: args[0].agent ?? defaultAgent }, ...args.slice(1)]
       : args

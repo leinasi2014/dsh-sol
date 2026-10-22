@@ -6,9 +6,10 @@ import {
   bucketsFromUsage,
   buildTurnRecord,
   BUCKET_KEYS,
+  COUNTERS_KEY,
   forkFacts,
   isFreshFork,
-  MeterState,
+  meterCountersProjection,
   mountMeter,
   subtractBuckets,
   totalsOf,
@@ -60,7 +61,10 @@ function buckets(partial = {}) {
 function harness({ totals, session, throwOnStateOf = false, announce = false } = {}) {
   const live = buckets(totals)
   const fake = createFakeCtx({ throwOnStateOf })
-  fake.ctx.sessionProjections.stateOf = () => (throwOnStateOf ? (() => { throw new Error('nope') })() : tokenUsageState(live))
+  const readProjection = fake.ctx.sessionProjections.stateOf.bind(fake.ctx.sessionProjections)
+  fake.ctx.sessionProjections.stateOf = (session, key) => key === 'tokenUsage'
+    ? (throwOnStateOf ? (() => { throw new Error('nope') })() : tokenUsageState(live))
+    : readProjection(session, key)
   const records = []
   const append = ({ sessionId, record }) => {
     records.push({ sessionId, record })
@@ -110,11 +114,12 @@ test('one turn produces exactly one ledger line', () => {
 test('the four buckets are read from .totals, not the top level', () => {
   const fake = createFakeCtx()
   const records = []
+  const readProjection = fake.ctx.sessionProjections.stateOf.bind(fake.ctx.sessionProjections)
   // A state shaped exactly like the projection: buckets under `.totals`.
-  fake.ctx.sessionProjections.stateOf = () => ({
+  fake.ctx.sessionProjections.stateOf = (session, key) => key === 'tokenUsage' ? ({
     totals: buckets({ uncachedInputTokens: 11, outputTokens: 22, cacheReadTokens: 33, cacheWriteTokens: 44 }),
     last: { turn: 1, step: 0, buckets: buckets({ uncachedInputTokens: 11 }) },
-  })
+  }) : readProjection(session, key)
   mountMeter(fake.ctx, { enabled: true, home: 'C:/h', append: (entry) => records.push(entry) })
   fake.emit('session/event', fakeSession(GOOD_ID), turnEnd(1))
   assert.deepEqual(records[0].record.usage, {
@@ -129,7 +134,8 @@ test('the live projection state is copied, not retained', () => {
   const live = tokenUsageState(buckets({ uncachedInputTokens: 5 }))
   const fake = createFakeCtx()
   const records = []
-  fake.ctx.sessionProjections.stateOf = () => live
+  const readProjection = fake.ctx.sessionProjections.stateOf.bind(fake.ctx.sessionProjections)
+  fake.ctx.sessionProjections.stateOf = (session, key) => key === 'tokenUsage' ? live : readProjection(session, key)
   mountMeter(fake.ctx, { enabled: true, home: 'C:/h', append: (entry) => records.push(entry) })
   fake.emit('session/event', fakeSession(GOOD_ID), turnEnd(1))
   // Mutating the projection's own object must not change what was recorded.
@@ -181,7 +187,7 @@ test('several compactions accumulate across turns', () => {
   const h = harness({ totals: { uncachedInputTokens: 1, outputTokens: 1 } })
   h.emit('session/event', h.session, compactionSummary({ inputTokens: 100, outputTokens: 10 }, 1))
   h.emit('session/event', h.session, turnEnd(1))
-  h.emit('session/event', h.session, compactionSummary({ inputTokens: 200, outputTokens: 20 }, 2))
+  h.emit('session/event', h.session, compactionSummary({ inputTokens: 200, outputTokens: 20 }, 11))
   h.emit('session/event', h.session, turnEnd(2))
   assert.equal(h.records[1].record.compactionCalls, 2)
   assert.equal(h.records[1].record.compaction.uncachedInputTokens, 300)
@@ -256,11 +262,13 @@ test('a seeded session first seen after creation is unknown', () => {
 test('a seeded session with no own events and no readable projection stays unknown', () => {
   const child = fakeForkSession(CHILD_ID, { parentSession: PARENT_ID })
   const fake = createFakeCtx()
+  const readProjection = fake.ctx.sessionProjections.stateOf.bind(fake.ctx.sessionProjections)
   fake.ctx.sessionProjections.stateOf = () => undefined
   const records = []
   mountMeter(fake.ctx, { enabled: true, home: 'C:/h', append: (entry) => records.push(entry) })
   fake.emit('session/created', child)
-  fake.ctx.sessionProjections.stateOf = () => tokenUsageState(buckets({ uncachedInputTokens: 1000 }))
+  fake.ctx.sessionProjections.stateOf = (session, key) => key === 'tokenUsage'
+    ? tokenUsageState(buckets({ uncachedInputTokens: 1000 })) : readProjection(session, key)
   fake.emit('session/event', child, turnEnd(1, 50))
   assert.equal(records[0].record.baseline, 'unknown')
 })
@@ -502,16 +510,42 @@ test('forkFacts tolerates a session without a header', () => {
   )
 })
 
-test('MeterState tracks compaction per session independently', () => {
-  const state = new MeterState()
-  const a = fakeSession('session-a')
-  const b = fakeSession('session-b')
-  state.noteCompaction(a, compactionSummary({ inputTokens: 10, outputTokens: 1 }))
-  state.noteCompaction(b, compactionSummary({ inputTokens: 20, outputTokens: 2 }))
-  assert.equal(state.claimTurn(a, 1, 10).compaction.uncachedInputTokens, 10)
-  assert.equal(state.claimTurn(b, 1, 10).compaction.uncachedInputTokens, 20)
-  assert.equal(state.hasTurn(a, 1, 10), true)
-  assert.equal(state.hasTurn(a, 2, 20), false)
+test('restored sessions retain pre-restart requests and compaction costs', () => {
+  const events = [assistantMessage(1), compactionSummary({ inputTokens: 90, outputTokens: 10 }, 2), turnEnd(1, 3)]
+  const restored = fakeSession(GOOD_ID, { seq: 4 })
+  restored.snapshotEvents = () => events
+  const h = harness({ session: restored, totals: { uncachedInputTokens: 200, outputTokens: 20 }, announce: true })
+  h.emit('session/event', restored, assistantMessage(4, 2))
+  h.emit('session/event', restored, turnEnd(2, 5))
+  assert.equal(h.records[0].record.requests, 2)
+  assert.equal(h.records[0].record.compactionCalls, 1)
+  assert.equal(h.records[0].record.compaction.uncachedInputTokens, 90)
+  assert.equal(h.records[0].record.compaction.outputTokens, 10)
+})
+
+test('late activation and restored forks count only their own historical events', () => {
+  const events = [assistantMessage(1), compactionSummary({ inputTokens: 500 }, 2),
+    assistantMessage(41), compactionSummary({ inputTokens: 7 }, 42)]
+  const restored = fakeRestoredForkSession(CHILD_ID, { inheritedEventCount: 40, length: 43 })
+  restored.snapshotEvents = () => events
+  const h = harness({ session: restored, totals: { uncachedInputTokens: 1000 } })
+  h.emit('session/event', restored, turnEnd(2, 43))
+  assert.equal(h.records[0].record.baseline, 'unknown')
+  assert.equal(h.records[0].record.requests, 1)
+  assert.equal(h.records[0].record.compactionCalls, 1)
+  assert.equal(h.records[0].record.compaction.uncachedInputTokens, 7)
+})
+
+test('counter projection checkpoints validate and unload with the meter', () => {
+  const state = meterCountersProjection.init({}, 40)
+  assert.equal(meterCountersProjection.stateSchema.parse(state), state)
+  assert.throws(() => meterCountersProjection.stateSchema.parse({ ...state, requests: -1 }), /checkpoint/u)
+  const fake = createFakeCtx()
+  const session = fakeSession(GOOD_ID)
+  const dispose = mountMeter(fake.ctx, { enabled: true, home: 'C:/h', append: () => {} })
+  assert.equal(fake.ctx.sessionProjections.stateOf(session, COUNTERS_KEY).requests, 0)
+  dispose()
+  assert.equal(fake.ctx.sessionProjections.stateOf(session, COUNTERS_KEY), undefined)
 })
 
 test('the record shape is stable', () => {

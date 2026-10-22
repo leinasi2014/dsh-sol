@@ -611,6 +611,35 @@ test('5.1 pwsh always gets a non-empty description', () => {
   assert.equal(args.command, 'npm test')
 })
 
+for (const [variant, name, args] of [
+  ['edit', EDIT_TOOL_NAME, { file_path: '/work/a.txt', old_string: 'old', new_string: 'new' }],
+  ['write', WRITE_TOOL_NAME, { file_path: '/work/a.txt', content: 'new' }],
+]) {
+  test(`5.1b ${variant} falls back to built-in bash and satisfies its required description`, async () => {
+    const h = harness({
+      visible: { bash: BASH_DEF },
+      results: {
+        [variant]: async () => editOk('new', '/work/a.txt'),
+        bash: async (exec) => {
+          // DSH's built-in bash requires description, unlike ops_bash.
+          if (typeof exec.arguments.description !== 'string' || exec.arguments.description.trim() === '') {
+            return err('invalid arguments: missing required property "description"')
+          }
+          assert.equal(exec.arguments.command, 'npm test')
+          assert.equal(exec.arguments.timeoutMs, 5000)
+          return ok({ exitCode: 0, timedOut: false }, 'verification passed')
+        },
+      },
+      read: async () => 'new',
+    })
+    const value = await h.byName.get(name).execute({ ...args, then_run: { command: 'npm test', timeout: 5000 } }, h.exec)
+    assert.equal(value.marker, MARKERS.succeeded)
+    assert.equal(value.shell, 'bash')
+    assert.match(value.text, /verification passed/u)
+    assert.deepEqual(h.fakeTools.executed.map((call) => call.name), [variant, 'bash'])
+  })
+}
+
 test('5.2 ops_bash gets command and never script_path', () => {
   const args = shellArguments('ops_bash', { command: 'npm test', timeout: undefined }, 'C:/w/a.txt')
   assert.equal(args.command, 'npm test')
@@ -632,7 +661,7 @@ test('5.3 then_run refuses script_path outright', () => {
 })
 
 test('5.4 a call can never carry both command and script_path', () => {
-  for (const name of ['ops_bash', 'pwsh']) {
+  for (const name of ['ops_bash', 'pwsh', 'bash']) {
     const args = shellArguments(name, { command: 'npm test', timeout: undefined }, 'f')
     assert.equal('command' in args, true, name)
     assert.equal('script_path' in args, false, name)
@@ -640,9 +669,9 @@ test('5.4 a call can never carry both command and script_path', () => {
 })
 
 test('5.5 no undeclared key reaches the shell', () => {
-  for (const name of ['ops_bash', 'pwsh']) {
+  for (const name of ['ops_bash', 'pwsh', 'bash']) {
     const args = shellArguments(name, { command: 'npm test', timeout: 1000 }, 'f')
-    const allowed = name === 'pwsh'
+    const allowed = name === 'pwsh' || name === 'bash'
       ? ['description', 'command', 'timeoutMs']
       : ['command', 'timeoutMs']
     for (const key of Object.keys(args)) assert.ok(allowed.includes(key), `${name} sent ${key}`)

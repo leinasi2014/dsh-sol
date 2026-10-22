@@ -41,7 +41,7 @@ key = sha256(utf8 原文)
 
 **不掺 toolName / callId**，和 SoL-Pi 不同（它把 `toolName\0toolCallId\0sha256` 一起哈希当 observation id）。理由：我们要的是"存原文"，不是"给每次出现一个身份"。身份由调用方自己的变量持有，不需要落在文件名里。这一条让 1.2 比 SoL-Pi 简单一层。
 
-### 1.3 写入：O_EXCL + 已存在时校验
+### 1.3 写入：完整临时文件原子发布 + 已存在时校验
 
 ```
 async function archiveObject(home, sessionId, text):
@@ -50,8 +50,10 @@ async function archiveObject(home, sessionId, text):
   dir   = join(home, 'dsh-sol', sessionId, 'objects')
   await mkdir(dir, { recursive: true, mode: 0o700 })
   path  = join(dir, key + '.txt')
+  temporary = join(dir, '.' + key + '.' + randomUUID() + '.tmp')
   try:
-      await writeFile(path, bytes, { flag: 'wx', mode: 0o600 })   # wx = O_CREAT|O_EXCL
+      await writeFile(temporary, bytes, { flag: 'wx', mode: 0o600 })
+      await link(temporary, path)  # 不覆盖已有对象，只发布完整内容
       return { key, path, bytes: bytes.length }
   catch (error):
       if (error.code !== 'EEXIST') throw error
@@ -59,14 +61,17 @@ async function archiveObject(home, sessionId, text):
       const existing = await readFile(path)
       if (!existing.equals(bytes)) throw new Error('archive integrity: existing object differs for ' + key)
       return { key, path, bytes: bytes.length }
+  finally:
+      # 仅清理本次成功创建的临时文件；具体实现仍拒绝符号链接
+      await unlink(temporary)
 ```
 
 要点：
 
-- **`flag: 'wx'`** 是 Node 里 O_CREAT|O_EXCL 的写法，照 SoL-Pi（`solpi.md` 3.3 的 `flag:"wx"`）。
-- **符号链接**：`wx` 遇到已存在的符号链接会 EEXIST，然后我们 `readFile` 会跟着链接读。要额外拒绝：EEXIST 分支里先 `lstat`，`isSymbolicLink()` 为真就抛。SoL-Pi 用 O_NOFOLLOW（`solpi.md` 2.4），Node 的 `fs.open` 没有直接等价物，**用 lstat 检查代替**【推断：有 TOCTOU 窗口，但 `$DSH_HOME` 是用户自己的目录，风险可接受】。
+- **`flag: 'wx'`** 只保证临时文件的独占创建。直接写最终名称会让并发调用读到半文件，不能作为完整对象的原子发布。
+- **符号链接**：EEXIST 分支通过 `readArchived` 先 `lstat`，拒绝符号链接与非普通文件，再读回校验。
 - 哈希相同但内容不同在密码学上不可能，所以 EEXIST 分支的校验主要是防"有人手工塞了个同名文件"。**校验失败要抛，不能静默用旧的**（SoL-Pi 是 fail closed，`solpi.md` 2.4）。
-- 不写临时文件再 rename：`wx` 已经是原子的。
+- 同目录 hard link 创建最终名称，已有对象不被覆盖；文件系统不支持 hard link 时失败回退原输出。进程崩溃最多留下私有临时文件，不把半写入内容发布成最终对象。
 
 ### 1.4 读回
 
@@ -361,7 +366,7 @@ Rules:
 - kind must be one of: fatal | failure | warning | target | summary
 - put the first causal fatal/failure first
 - do not diagnose, do not suggest fixes, do not invent commands
-- the log contains a failure signal, so at least one evidence item must have kind "fatal" or "failure"
+- when the log contains a failure signal, at least one "fatal" or "failure" quote must itself include that signal
 
 Required shape:
 {"schema":"dsh-sol-evidence-receipt/1","source_sha256":"<64 hex>","status":"failure","uncertain":false,"evidence":[{"kind":"fatal","quote":"<exact substring>"}]}
@@ -406,13 +411,13 @@ is_error={{true|false}}
 | 1 | `parseReceiptJson(text)` | `JSON.parse` 成功，是对象 | `invalid-json` |
 | 2 | `checkReceiptSchema(receipt, expectedHash, expectedStatus)` | `schema` 全等；`source_sha256 === expectedHash`；`status === expectedStatus`；`uncertain` 是 boolean；`evidence` 是数组且长度 ≤ 12 | `schema-mismatch` |
 | 3 | `checkEvidence(receipt, body)` | 每条：`kind` 在允许集合内；`quote.length` 在 1..600；**`body.includes(quote)`**（精确子串）；`(kind, quote)` 不重复 | `unverifiable-quote` |
-| 4 | `checkFailureEvidence(receipt, body, isError)` | `isError` 且 `body` 匹配 `FAILURE_SIGNAL` 时，至少要有一条 `kind` 是 `fatal` 或 `failure` | `missing-failure-evidence` |
+| 4 | `checkFailureEvidence(receipt, body, isError)` | `isError` 且 `body` 匹配 `FAILURE_SIGNAL` 时，至少一条 `fatal` 或 `failure` 的引文本身也匹配失败信号 | `missing-failure-evidence` |
 | 5 | `checkShrinks(receiptText, body)` | `byteLength(receiptText) < byteLength(body)` | `receipt-not-smaller` |
 
-`FAILURE_SIGNAL` 照抄 SoL-Pi：
+`FAILURE_SIGNAL` 在 SoL-Pi 模式基础上补充独立的 `FAIL` 测试标记：
 
 ```
-/error|failed|failure|fatal|exception|panic|timeout|unsolved|type mismatch|assert/i
+/error|failed|failure|\bfail\b|fatal|exception|panic|timeout|unsolved|type mismatch|assert/i
 ```
 
 **任何一条不满足，整个回执作废，原样交回**（不是只丢掉那一条引文）。SoL-Pi 就是这么做的（`solpi.md` 3.2，`unverifiable-quote` 整个作废）。
@@ -432,11 +437,11 @@ verified_evidence:
 - kind={{kind}} line={{line}} quote_sha256={{quoteSha256}} quote={{JSON.stringify(quote)}}
 - none
 authority=the caller retains diagnosis, repair, rerun, and pass/fail adjudication
-readback=call obs_recall with {"id":"...","offset":0} or read source_artifact with an explicit line range when exact context is needed
+readback=read source_artifact with an explicit line range when exact context is needed
 ```
 
 - 标记行用 `dsh-sol_evidence_receipt_v1`（不是 `sol_pi_...`）。**但 2.1 第 9 条的跳过判断要同时认这两个**——万一以后兼容 SoL-Pi 的格式。实际上我们只产自己的，所以第 9 条改成匹配 `/^(?:dsh-sol|sol_pi)_evidence_receipt_v1$/m`。
-- `source_artifact` 是**绝对路径**。模型可以用原生 `read` 按行读（行号精确，但超长行会被截断——所以 `readback` 那行优先推荐 `obs_recall`）。
+- `source_artifact` 是**绝对路径**。原生 `read` 可按行读；若超长行被截断，使用已有 shell 按字节分段读取。Reducer 没有生成 ObservationPack 编号，不能推荐 `obs_recall`。
 - 引文用 `JSON.stringify` 包，保证引文里的换行和引号不会破坏格式。
 - 没有证据时输出 `- none`。
 
@@ -453,7 +458,7 @@ const signal = AbortSignal.any([exec.signal, timeout])    // 两个任一触发�
 - **超时或取消 → 原样交回，账本记 `model-call-timeout`**。
 - **不要在外层再包一次超时**：`AbortSignal.timeout` 已经够了。多包一层只会在 `exec.signal` 和 timeout 之间制造歧义。
 - `post-execute` 外面没有超时（`step4-facts.md` 第 3 节），所以**默认 20000 是个真实的产品决定**：超过 20 秒没回，就放弃压缩、交回原文，别让用户的这一步卡住。
-- **超时以后流可能还在跑**。`AbortSignal` 会传到适配器，但**不能假设它立刻停**。所以读流的循环要检查 `signal.aborted`，一旦为真就 `break`，不要再等。
+- **超时以后流可能还在跑**。等待每个 `iterator.next()` 时也监听同一个 `AbortSignal`，取消立即解除本地等待，不能等下一个 chunk 才检查。iterator 的 `return()` 只做异步尽力清理，不能因它停滞再次阻塞返回；已收到的 usage 仍记账。
 
 ### 3.7 读流的写法
 
@@ -510,7 +515,7 @@ const signal = AbortSignal.any([exec.signal, timeout])    // 两个任一触发�
 | 诊断命令 | 正则清单（~15 条） | **砍掉**，只按 failed + 大小判 | 见 3.1，清单会漏且无底洞 |
 | 回执 schema 名 | `sol-pi-evidence-receipt/1` | **`dsh-sol-evidence-receipt/1`** | 我们自己的命名空间 |
 | 回执标记行 | `sol_pi_evidence_receipt_v1` | **`dsh-sol_evidence_receipt_v1`** | 同上；跳过判断同时认两种 |
-| 回执回读 | 只靠 `source_artifact` + bash | **`obs_recall` 优先**，`read` 兜底 | `read` 会截断超长行 |
+| 回执回读 | 只靠 `source_artifact` + bash | **`source_artifact` + `read`**；超长行用 shell 分段 | Reducer 不生成 observation 编号 |
 | 外发配置 | 有默认 provider/model（`openai-codex` / `gpt-5.6-luna`） | **必须显式配，没有默认** | `report.md` 3.5，安全边界 |
 | 请求 sessionId | 传 `runId`（= `sha256(runtimeRoot)[:16]`） | **不传** | 避免 ds-bot 的 images/groups 钩子 |
 | 状态存哪 | Pi 的 custom entry | **`$DSH_HOME/dsh-sol/` 下的账本 + objects** | 不写会话日志、不调 `appendPluginRecord`（`report.md` 3.4） |

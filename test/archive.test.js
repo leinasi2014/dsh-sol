@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
@@ -99,6 +99,23 @@ test('archiving the same content twice is idempotent and verified', async () => 
   }
 })
 
+test('concurrent identical writes publish one complete object without partial-read failures', async () => {
+  const home = await tempHome()
+  try {
+    const content = Buffer.alloc(2 * 1024 * 1024, 'x')
+    const results = await Promise.all(Array.from({ length: 16 }, () => (
+      archiveContent({ home, sessionId: GOOD_ID, content })
+    )))
+    const digest = sha256(content)
+    assert.equal(results.filter((result) => result.created).length, 1)
+    assert.ok(results.every((result) => result.digest === digest && result.bytes === content.length))
+    assert.deepEqual(await readArchived({ home, sessionId: GOOD_ID, digest }), content)
+    assert.deepEqual(await readdir(objectsDir(home, GOOD_ID)), [`${digest}.txt`], 'no temporary files remain')
+  } finally {
+    await rm(home, { recursive: true, force: true })
+  }
+})
+
 test('an existing object whose content does not match its name is refused', async () => {
   const home = await tempHome()
   try {
@@ -111,6 +128,8 @@ test('an existing object whose content does not match its name is refused', asyn
       () => archiveContent({ home, sessionId: GOOD_ID, content: 'real' }),
       /does not match its name/u,
     )
+    assert.equal(await readFile(join(dir, `${digest}.txt`), 'utf8'), 'tampered', 'the existing object is not overwritten')
+    assert.deepEqual(await readdir(dir), [`${digest}.txt`], 'failed publication cleans its temporary file')
   } finally {
     await rm(home, { recursive: true, force: true })
   }
