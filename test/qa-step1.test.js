@@ -54,7 +54,9 @@ function buckets(partial = {}) {
 function harness(session, totals, announce = true) {
   const live = buckets(totals)
   const fake = createFakeCtx()
-  fake.ctx.sessionProjections.stateOf = () => tokenUsageState(live)
+  const readProjection = fake.ctx.sessionProjections.stateOf.bind(fake.ctx.sessionProjections)
+  fake.ctx.sessionProjections.stateOf = (session, key) => key === 'tokenUsage'
+    ? tokenUsageState(live) : readProjection(session, key)
   const records = []
   mountMeter(fake.ctx, { enabled: true, home: 'C:/qa-home', append: (entry) => records.push(entry) })
   if (announce) fake.emit('session/created', session)

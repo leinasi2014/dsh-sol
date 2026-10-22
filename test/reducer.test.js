@@ -96,6 +96,21 @@ function streamOf(chunks) {
   })()
 }
 
+/** Fail a stalled-stream test promptly, while keeping Node alive for AbortSignal.timeout. */
+async function withinDeadline(promise) {
+  let timer
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_resolve, reject) => {
+        timer = setTimeout(() => reject(new Error('reducer did not return after cancellation')), 1000)
+      }),
+    ])
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 /**
  * A fake llm service that returns one scripted stream.
  * @param {object[]|Error} chunks - the chunks, or an error to throw.
@@ -515,6 +530,9 @@ test('checkFailureEvidence requires fatal or failure evidence when the log says 
   const body = 'Error: boom'
   assert.equal(checkFailureEvidence({ evidence: [{ kind: 'failure', quote: 'Error: boom' }] }, body, true).ok, true)
   assert.equal(checkFailureEvidence({ evidence: [{ kind: 'fatal', quote: 'Error: boom' }] }, body, true).ok, true)
+  assert.equal(checkFailureEvidence({ evidence: [{ kind: 'failure', quote: 'FAIL src/a.test.ts' }] }, 'FAIL src/a.test.ts\nError: boom', true).ok, true)
+  assert.equal(FAILURE_SIGNAL.test('FAIL src/a.test.ts'), true)
+  assert.equal(FAILURE_SIGNAL.test('profile saved; failover check passed'), false)
   assert.equal(checkFailureEvidence({ evidence: [{ kind: 'warning', quote: 'Error: boom' }] }, body, true).reason, 'missing-failure-evidence')
   assert.equal(checkFailureEvidence({ evidence: [] }, body, true).reason, 'missing-failure-evidence')
   // A log with no failure signal does not require one.
@@ -610,6 +628,8 @@ test('the receipt text follows the fixed template', () => {
   assert.match(lines[5], /^- kind=failure line=1 quote_sha256=[0-9a-f]{64} quote="Error: boom"$/u)
   assert.match(lines[6], /^authority=/u)
   assert.match(lines[7], /^readback=/u)
+  assert.match(lines[7], /read source_artifact with an explicit line range/u)
+  assert.doesNotMatch(lines[7], /obs_recall/u, 'reducer archives have no observation id')
 })
 
 test('an empty evidence list renders as - none', () => {
@@ -765,6 +785,46 @@ test('an aborted signal stops the loop and is named', async () => {
   assert.equal(result.reason, 'model-call-timeout')
 })
 
+test('an already cancelled reducer call never starts the model stream', async () => {
+  const controller = new AbortController()
+  controller.abort()
+  const llm = fakeLlm(okChunks('{}'))
+  const result = await callModel({ llm, provider: 'p', model: 'm', signal: controller.signal })
+  assert.equal(result.reason, 'model-call-timeout')
+  assert.equal(llm.calls.length, 0)
+})
+
+test('caller cancellation interrupts a stalled stream and ignores late adapter rejection', async () => {
+  const controller = new AbortController()
+  let rejectRead
+  let readStarted
+  const waiting = new Promise((resolve) => { readStarted = resolve })
+  let closed = 0
+  const llm = {
+    stream() {
+      return {
+        [Symbol.asyncIterator]() { return this },
+        next() {
+          readStarted()
+          return new Promise((_resolve, reject) => { rejectRead = reject })
+        },
+        return() {
+          closed += 1
+          return Promise.reject(new Error('adapter cleanup failed'))
+        },
+      }
+    },
+  }
+  const pending = callModel({ llm, provider: 'p', model: 'm', signal: controller.signal })
+  await waiting
+  controller.abort()
+  const result = await withinDeadline(pending)
+  assert.equal(result.reason, 'model-call-timeout')
+  assert.equal(closed, 1)
+  rejectRead(new Error('late transport failure'))
+  await new Promise((resolve) => setImmediate(resolve))
+})
+
 test('fuseSignals aborts on either source', () => {
   const controller = new AbortController()
   const fused = fuseSignals(controller.signal, 60000)
@@ -814,6 +874,17 @@ test('an invented quote falls back to the original result', async () => {
   assert.equal(lines[0].reason, 'unverifiable-quote')
 })
 
+test('a failure label cannot replace the log with only an unrelated progress quote', async () => {
+  for (const kind of ['failure', 'fatal']) {
+    const reply = receiptJson(FAILING_LOG, { evidence: [{ kind, quote: 'build step ok' }] })
+    const { decision, lines } = await runHandler({ reply })
+    assert.deepEqual(decision, { kind: 'accept' }, 'keep the original failure evidence')
+    assert.equal(lines[0].kind, 'reducer-fallback')
+    assert.equal(lines[0].reason, 'missing-failure-evidence')
+    assert.equal(lines[0].usage.totalTokens, 120)
+  }
+})
+
 test('a receipt that is not smaller falls back', async () => {
   const body = `${'FAIL\n'.repeat(900)}`
   const reply = receiptJson(body, {
@@ -844,6 +915,36 @@ test('a model timeout falls back and records the usage', async () => {
   assert.equal(lines.length, 1)
   assert.equal(lines[0].kind, 'reducer-fallback')
   assert.equal(lines[0].usage.totalTokens, 7, 'a failed call still costs tokens')
+})
+
+test('the configured timeout returns the original result even when next and cleanup stall', async () => {
+  let reads = 0
+  let closed = 0
+  const usage = { inputTokens: 7, outputTokens: 2, totalTokens: 9 }
+  const llm = {
+    stream() {
+      return {
+        [Symbol.asyncIterator]() { return this },
+        next() {
+          reads += 1
+          if (reads === 1) return Promise.resolve({ done: false, value: { type: 'usage', usage } })
+          return new Promise(() => {})
+        },
+        return() {
+          closed += 1
+          return new Promise(() => {})
+        },
+      }
+    },
+  }
+  const { decision, lines } = await withinDeadline(runHandler({ llm, config: config({ timeoutMs: 10 }) }))
+  assert.deepEqual(decision, { kind: 'accept' })
+  assert.equal(reads, 2)
+  assert.equal(closed, 1)
+  assert.equal(lines.length, 1)
+  assert.equal(lines[0].kind, 'reducer-fallback')
+  assert.equal(lines[0].reason, 'model-call-timeout')
+  assert.deepEqual(lines[0].usage, usage)
 })
 
 test('a disabled reducer makes no request at all', async () => {
